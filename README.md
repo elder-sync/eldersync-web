@@ -37,10 +37,14 @@ src/
 
 ## Deployment
 
-### Vercel (Recommended)
+### Netlify (Recommended)
 
-1. Connect repo to Vercel
-2. Deploy automatically on push to `main`
+1. Connect repo to Netlify
+2. Set build command: `npm run build`
+3. Set publish directory: `dist`
+4. Deploy automatically on push to `main`
+
+Config file: `netlify.toml` (already included)
 
 ### Manual
 
