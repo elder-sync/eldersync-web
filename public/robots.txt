@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://eldersync-web.netlify.app/sitemap.xml
