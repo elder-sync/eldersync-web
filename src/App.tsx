@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 function App() {
   const [email, setEmail] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [openFaq, setOpenFaq] = useState<number | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -14,22 +16,56 @@ function App() {
     setLoading(false)
   }
 
+  const faqs = [
+    {
+      question: 'How do I monitor my elderly parents remotely in Singapore?',
+      answer:
+        'ElderSync lets you monitor your elderly parents remotely through daily check-ins, medication tracking, and activity updates — all from your smartphone. Your parent simply taps a button on their tablet to confirm they\'re doing well, and you receive real-time updates throughout the day. For emergencies, our SOS feature sends instant alerts with location information to all family members.',
+    },
+    {
+      question: 'How can I make sure my elderly parent takes their medication?',
+      answer:
+        'ElderSync sends gentle, timely medication reminders to your parent\'s device with large, easy-to-read instructions. When they take their medication, they can confirm it with a single tap, and you\'ll see the update on your family dashboard. If a dose is missed, the app sends follow-up reminders and notifies designated family members so someone can check in.',
+    },
+    {
+      question: 'What is the best elderly care app in Singapore?',
+      answer:
+        'ElderSync is designed specifically for Singapore families. Unlike generic health apps, ElderSync combines medication tracking, daily check-ins, emergency SOS alerts, and family coordination in one simple interface. It\'s built with senior-friendly design — big buttons, clear text, and simple navigation — so your parents can use it independently on a tablet.',
+    },
+    {
+      question: 'How much does ElderSync cost?',
+      answer:
+        'ElderSync is currently in development and will launch with an affordable pricing model designed for Singapore families. Join our waitlist to be the first to know about pricing and to receive early-bird discounts. Our goal is to make eldercare technology accessible to every family, not just those who can afford expensive monitoring systems.',
+    },
+    {
+      question: 'Is ElderSync suitable for elderly parents with dementia?',
+      answer:
+        'Yes, ElderSync is designed with simplicity in mind, making it suitable for parents with mild to moderate cognitive impairment. The senior-facing interface uses large buttons, clear visual cues, and simple one-tap interactions. For families caring for a parent with dementia, the medication reminders and daily check-in features are especially valuable for maintaining routines and ensuring safety.',
+    },
+    {
+      question: 'How do I coordinate elderly care among siblings?',
+      answer:
+        'ElderSync\'s family dashboard gives all family members visibility into your parent\'s daily wellbeing. Everyone can see medication status, check-in responses, and activity updates in real time. You can assign caregiving tasks, share notes, and coordinate schedules — so no one person carries the entire burden. It\'s like a shared family command centre for eldercare.',
+    },
+  ]
+
   return (
     <div className="min-h-screen bg-white text-gray-900">
       {/* ── Navigation ── */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/70 backdrop-blur-xl border-b border-gray-200/60">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <a href="#" className="flex items-center gap-2.5">
+          <Link to="/" className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
               <svg className="w-4.5 h-4.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
             </div>
             <span className="text-lg font-semibold tracking-tight">ElderSync</span>
-          </a>
+          </Link>
           <div className="hidden md:flex items-center gap-8 text-sm">
             <a href="#features" className="text-gray-500 hover:text-gray-900 transition-colors">Features</a>
             <a href="#how-it-works" className="text-gray-500 hover:text-gray-900 transition-colors">How it Works</a>
+            <Link to="/blog" className="text-gray-500 hover:text-gray-900 transition-colors">Blog</Link>
             <a href="#waitlist" className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors">
               Join Waitlist
             </a>
@@ -370,6 +406,104 @@ function App() {
         </div>
       </section>
 
+      {/* ── FAQ ── */}
+      <section id="faq" className="py-28 px-6">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-16">
+            <p className="text-xs font-medium text-emerald-600 uppercase tracking-widest mb-3">FAQ</p>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
+              Frequently asked questions
+            </h2>
+            <p className="text-gray-500 max-w-lg mx-auto">
+              Everything you need to know about ElderSync and caring for your elderly parents.
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            {faqs.map((faq, i) => (
+              <div
+                key={i}
+                className="border border-gray-200 rounded-xl overflow-hidden transition-colors hover:border-gray-300"
+              >
+                <button
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  className="w-full flex items-center justify-between gap-4 p-5 text-left cursor-pointer"
+                >
+                  <span className="text-sm font-medium text-gray-900">{faq.question}</span>
+                  <svg
+                    className={`w-5 h-5 text-gray-400 shrink-0 transition-transform duration-200 ${openFaq === i ? 'rotate-180' : ''}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {openFaq === i && (
+                  <div className="px-5 pb-5">
+                    <p className="text-sm text-gray-500 leading-relaxed">{faq.answer}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Blog Teaser ── */}
+      <section className="py-20 px-6 bg-gray-50/80">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <p className="text-xs font-medium text-emerald-600 uppercase tracking-widest mb-3">Resources</p>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
+              From our blog
+            </h2>
+            <p className="text-gray-500 max-w-lg mx-auto">
+              Expert guides and insights on eldercare in Singapore.
+            </p>
+          </div>
+
+          <div className="max-w-2xl mx-auto">
+            <Link
+              to="/blog/complete-guide-elderly-care-singapore"
+              className="group block bg-white border border-gray-200 rounded-2xl p-6 hover:border-emerald-200 hover:shadow-lg hover:shadow-emerald-50 transition-all duration-300"
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">
+                  Guide
+                </span>
+                <span className="text-xs text-gray-400">12 min read</span>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 group-hover:text-emerald-700 transition-colors mb-2">
+                The Complete Guide to Elderly Care in Singapore (2026)
+              </h3>
+              <p className="text-sm text-gray-500 leading-relaxed mb-3">
+                Everything you need to know about elderly care options, costs, government subsidies, and how to choose the right care.
+              </p>
+              <span className="inline-flex items-center gap-1.5 text-sm font-medium text-emerald-600 group-hover:gap-2.5 transition-all">
+                Read article
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </span>
+            </Link>
+          </div>
+
+          <div className="text-center mt-8">
+            <Link
+              to="/blog"
+              className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-emerald-600 transition-colors"
+            >
+              View all articles
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* ── CTA ── */}
       <section className="py-28 px-6 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950" />
@@ -418,13 +552,15 @@ function App() {
               <ul className="space-y-2.5">
                 <li><a href="#features" className="text-sm text-gray-500 hover:text-white transition-colors">Features</a></li>
                 <li><a href="#how-it-works" className="text-sm text-gray-500 hover:text-white transition-colors">How it Works</a></li>
+                <li><a href="#faq" className="text-sm text-gray-500 hover:text-white transition-colors">FAQ</a></li>
                 <li><a href="#waitlist" className="text-sm text-gray-500 hover:text-white transition-colors">Join Waitlist</a></li>
               </ul>
             </div>
             <div>
-              <p className="text-xs font-medium text-gray-400 uppercase tracking-widest mb-4">Company</p>
+              <p className="text-xs font-medium text-gray-400 uppercase tracking-widest mb-4">Resources</p>
               <ul className="space-y-2.5">
-                <li><a href="#" className="text-sm text-gray-500 hover:text-white transition-colors">About</a></li>
+                <li><Link to="/blog" className="text-sm text-gray-500 hover:text-white transition-colors">Blog</Link></li>
+                <li><Link to="/blog/complete-guide-elderly-care-singapore" className="text-sm text-gray-500 hover:text-white transition-colors">Elderly Care Guide</Link></li>
                 <li><a href="#" className="text-sm text-gray-500 hover:text-white transition-colors">Privacy</a></li>
                 <li><a href="#" className="text-sm text-gray-500 hover:text-white transition-colors">Terms</a></li>
               </ul>
@@ -441,6 +577,25 @@ function App() {
           </div>
         </div>
       </footer>
+
+      {/* FAQ Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: faqs.map((faq) => ({
+              '@type': 'Question',
+              name: faq.question,
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: faq.answer,
+              },
+            })),
+          }),
+        }}
+      />
     </div>
   )
 }
