@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareHive — Investor Pitch Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-body: 'Instrument Serif', Georgia, serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+    --bg: #0f1729;
+    --surface: #162040;
+    --surface2: #1d2b52;
+    --surface-elevated: #243362;
+    --border: rgba(200, 180, 140, 0.08);
+    --border-bright: rgba(200, 180, 140, 0.16);
+    --text: #e8e4d8;
+    --text-dim: #9a9484;
+    --accent: #d4a73a;
+    --accent-dim: rgba(212, 167, 58, 0.1);
+    --code-bg: #0a0f1e;
+    --code-text: #d4d0c4;
+    --green: #4ade80;
+    --green-dim: rgba(74, 222, 128, 0.1);
+    --red: #f87171;
+    --red-dim: rgba(248, 113, 113, 0.1);
+    --blue: #60a5fa;
+    --blue-dim: rgba(96, 165, 250, 0.1);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #faf8f2; --surface: #ffffff; --surface2: #f5f0e6; --surface-elevated: #fffdf5;
+      --border: rgba(30, 30, 50, 0.08); --border-bright: rgba(30, 30, 50, 0.16);
+      --text: #1a1814; --text-dim: #7a7468; --accent: #b8860b; --accent-dim: rgba(184, 134, 11, 0.08);
+      --code-bg: #2a2520; --code-text: #e8e4d8;
+      --green: #16a34a; --green-dim: rgba(22, 163, 74, 0.08);
+      --red: #dc2626; --red-dim: rgba(220, 38, 38, 0.08);
+      --blue: #2563eb; --blue-dim: rgba(37, 99, 235, 0.08);
+    }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: var(--font-body); color: var(--text); background: var(--bg); overflow: hidden; }
+
+  .deck { height: 100dvh; overflow-y: auto; scroll-snap-type: y mandatory; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+
+  .slide {
+    height: 100dvh; scroll-snap-align: start; overflow: hidden; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: clamp(40px, 6vh, 80px) clamp(40px, 8vw, 120px);
+    isolation: isolate; opacity: 0; transform: translateY(40px) scale(0.98);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .slide.visible { opacity: 1; transform: none; }
+  .slide .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+  .slide.visible .reveal { opacity: 1; transform: none; }
+  .slide.visible .reveal:nth-child(1) { transition-delay: 0.1s; }
+  .slide.visible .reveal:nth-child(2) { transition-delay: 0.2s; }
+  .slide.visible .reveal:nth-child(3) { transition-delay: 0.3s; }
+  .slide.visible .reveal:nth-child(4) { transition-delay: 0.4s; }
+  .slide.visible .reveal:nth-child(5) { transition-delay: 0.5s; }
+  .slide.visible .reveal:nth-child(6) { transition-delay: 0.6s; }
+  .slide.visible .reveal:nth-child(7) { transition-delay: 0.7s; }
+  .slide.visible .reveal:nth-child(8) { transition-delay: 0.8s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slide, .slide .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  }
+
+  /* NAV CHROME */
+  .deck-progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); z-index: 100; transition: width 0.3s ease; pointer-events: none; }
+  .deck-dots { position: fixed; right: clamp(12px, 2vw, 24px); top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 8px; z-index: 100; padding: 8px; background: color-mix(in srgb, var(--bg) 60%, transparent 40%); border-radius: 20px; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+  .deck-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-dim); opacity: 0.3; border: none; padding: 0; cursor: pointer; transition: opacity 0.2s ease, transform 0.2s ease; }
+  .deck-dot:hover { opacity: 0.6; }
+  .deck-dot.active { opacity: 1; transform: scale(1.5); background: var(--accent); }
+  .deck-counter { position: fixed; bottom: clamp(12px, 2vh, 24px); right: clamp(12px, 2vw, 24px); font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); z-index: 100; font-variant-numeric: tabular-nums; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+  .deck-hints { position: fixed; bottom: clamp(12px, 2vh, 24px); left: 50%; transform: translateX(-50%); font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); opacity: 0.6; z-index: 100; transition: opacity 0.5s ease; white-space: nowrap; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+  .deck-hints.faded { opacity: 0; pointer-events: none; }
+
+  /* SHARED ELEMENTS */
+  .slide__display { font-size: clamp(48px, 10vw, 120px); font-weight: 400; letter-spacing: -2px; line-height: 0.95; text-wrap: balance; }
+  .slide__heading { font-size: clamp(28px, 5vw, 48px); font-weight: 400; letter-spacing: -0.5px; line-height: 1.15; text-wrap: balance; }
+  .slide__body { font-size: clamp(16px, 2.2vw, 22px); line-height: 1.6; color: var(--text-dim); text-wrap: pretty; }
+  .slide__subtitle { font-family: var(--font-mono); font-size: clamp(12px, 1.5vw, 18px); color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; }
+  .slide__label { font-family: var(--font-mono); font-size: clamp(10px, 1.2vw, 13px); font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 12px; }
+  .slide__decor { position: absolute; pointer-events: none; z-index: 0; }
+
+  /* TITLE */
+  .slide--title { justify-content: center; align-items: center; text-align: center; background-image: radial-gradient(ellipse at 50% 30%, var(--accent-dim) 0%, transparent 50%); }
+  .slide--title .slide__display { color: var(--accent); }
+
+  /* DIVIDER */
+  .slide--divider { justify-content: center; }
+  .slide--divider .slide__number { font-size: clamp(100px, 22vw, 260px); font-weight: 200; line-height: 0.85; opacity: 0.06; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -55%); pointer-events: none; font-variant-numeric: tabular-nums; color: var(--accent); }
+
+  /* CONTENT */
+  .slide--content .slide__inner { display: grid; grid-template-columns: 3fr 2fr; gap: clamp(24px, 4vw, 60px); align-items: center; width: 100%; }
+  .slide__bullets { list-style: none; padding: 0; }
+  .slide__bullets li { padding: 10px 0 10px 24px; position: relative; font-size: clamp(16px, 2vw, 22px); line-height: 1.5; color: var(--text-dim); }
+  .slide__bullets li::before { content: ''; position: absolute; left: 0; top: 20px; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+  /* SPLIT */
+  .slide--split { padding: 0; }
+  .slide--split .slide__panels { display: grid; grid-template-columns: 1fr 1fr; height: 100%; }
+  .slide--split .slide__panel { padding: clamp(40px, 6vh, 80px) clamp(32px, 4vw, 60px); display: flex; flex-direction: column; justify-content: center; }
+  .slide--split .slide__panel--primary { background: var(--surface); }
+  .slide--split .slide__panel--secondary { background: var(--surface2); }
+
+  /* DIAGRAM */
+  .slide--diagram { padding: clamp(24px, 4vh, 48px) clamp(24px, 4vw, 60px); }
+  .slide--diagram .slide__heading { margin-bottom: clamp(8px, 1.5vh, 20px); }
+  .mermaid-wrap { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; overflow: auto; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+  .mermaid-wrap::-webkit-scrollbar { width: 6px; height: 6px; }
+  .mermaid-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  .mermaid-wrap .mermaid { transition: transform 0.2s ease; transform-origin: center center; }
+  .zoom-controls { position: absolute; top: 8px; right: 8px; display: flex; gap: 2px; z-index: 10; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 2px; }
+  .zoom-controls button { width: 28px; height: 28px; border: none; background: transparent; color: var(--text-dim); font-family: var(--font-mono); font-size: 14px; cursor: pointer; border-radius: 4px; display: flex; align-items: center; justify-content: center; transition: background 0.15s, color 0.15s; }
+  .zoom-controls button:hover { background: var(--border); color: var(--text); }
+  .mermaid-wrap.is-zoomed { cursor: grab; }
+  .mermaid-wrap.is-panning { cursor: grabbing; user-select: none; }
+  .mermaid .nodeLabel { color: var(--text) !important; }
+  .mermaid .edgeLabel { color: var(--text-dim) !important; background-color: var(--bg) !important; }
+  .mermaid .edgeLabel rect { fill: var(--bg) !important; }
+  .slide--diagram .mermaid svg { width: 100% !important; height: auto !important; max-width: 100% !important; }
+  .slide--diagram .mermaid .nodeLabel { font-size: 16px !important; }
+  .slide--diagram .mermaid .edgeLabel { font-family: var(--font-mono) !important; font-size: 13px !important; }
+
+  /* DASHBOARD */
+  .slide--dashboard .slide__kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(clamp(140px, 20vw, 220px), 1fr)); gap: clamp(12px, 2vw, 24px); }
+  .slide__kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: clamp(16px, 3vh, 32px) clamp(16px, 2vw, 24px); min-width: 0; overflow: hidden; }
+  .slide__kpi-val { font-size: clamp(36px, 6vw, 64px); font-weight: 400; letter-spacing: -1.5px; line-height: 1.1; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .slide__kpi-label { font-family: var(--font-mono); font-size: clamp(9px, 1.2vw, 13px); font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); margin-top: 8px; }
+  .slide__kpi-trend { font-family: var(--font-mono); font-size: 12px; margin-top: 4px; }
+
+  /* TABLE */
+  .slide--table { padding: clamp(24px, 4vh, 48px) clamp(24px, 4vw, 60px); }
+  .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; flex: 1; min-height: 0; }
+  .table-scroll { overflow-x: auto; }
+  .data-table { width: 100%; border-collapse: collapse; }
+  .data-table th { background: var(--surface2); font-family: var(--font-mono); font-size: clamp(10px, 1.3vw, 14px); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); text-align: left; padding: clamp(10px, 1.5vh, 16px) clamp(14px, 2vw, 24px); border-bottom: 2px solid var(--border-bright); white-space: nowrap; }
+  .data-table td { padding: clamp(10px, 1.5vh, 16px) clamp(14px, 2vw, 24px); border-bottom: 1px solid var(--border); font-size: clamp(13px, 1.6vw, 18px); vertical-align: top; }
+  .data-table tbody tr:last-child td { border-bottom: none; }
+  .data-table tbody tr:nth-child(even) { background: var(--surface2); }
+  .data-table tbody tr { transition: background 0.15s; }
+  .data-table tbody tr:hover { background: var(--accent-dim); }
+  .data-table code { font-family: var(--font-mono); font-size: 0.85em; background: var(--accent-dim); color: var(--accent); padding: 1px 5px; border-radius: 3px; }
+
+  /* QUOTE */
+  .slide--quote { justify-content: center; align-items: center; text-align: center; padding: clamp(60px, 10vh, 120px) clamp(60px, 12vw, 200px); }
+  .slide__quote-mark { font-size: clamp(80px, 14vw, 180px); line-height: 0.5; opacity: 0.06; font-family: Georgia, serif; pointer-events: none; margin-bottom: -20px; color: var(--accent); }
+  .slide--quote blockquote { font-size: clamp(24px, 4vw, 48px); font-weight: 400; line-height: 1.35; font-style: italic; }
+  .slide--quote cite { font-family: var(--font-mono); font-size: clamp(11px, 1.4vw, 14px); font-style: normal; margin-top: clamp(16px, 3vh, 32px); display: block; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); }
+
+  /* BLEED */
+  .slide--bleed { padding: 0; justify-content: flex-end; }
+  .slide__bg { position: absolute; inset: 0; background-size: cover; background-position: center; z-index: 0; }
+  .slide__bg--gradient { background: linear-gradient(135deg, #1a0f3c 0%, #0f1729 40%, #162040 100%); }
+  .slide__scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.2) 40%, transparent 100%); z-index: 1; }
+  .slide--bleed .slide__content { position: relative; z-index: 2; padding: clamp(40px, 6vh, 80px) clamp(40px, 8vw, 120px); color: #ffffff; }
+  .slide--bleed .slide__heading { color: #ffffff; }
+  .slide--bleed .slide__subtitle { color: rgba(255,255,255,0.7); }
+
+  /* CUSTOM: feature grid */
+  .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
+  .feature-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; border-left: 3px solid var(--accent); }
+  .feature-card h4 { font-size: 18px; margin-bottom: 6px; color: var(--text); font-weight: 400; }
+  .feature-card p { font-size: 14px; color: var(--text-dim); line-height: 1.5; }
+  .feature-card .icon { font-size: 28px; margin-bottom: 8px; }
+
+  /* CUSTOM: team grid */
+  .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+  .team-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
+  .team-card .role { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-top: 4px; }
+  .team-card .name { font-size: 16px; color: var(--text); }
+
+  /* CUSTOM: timeline */
+  .timeline { display: flex; gap: 0; margin-top: 20px; align-items: stretch; }
+  .timeline-step { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; position: relative; }
+  .timeline-step .phase { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-bottom: 6px; }
+  .timeline-step h4 { font-size: 16px; color: var(--text); font-weight: 400; margin-bottom: 6px; }
+  .timeline-step p { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+  .timeline-arrow { display: flex; align-items: center; padding: 0 6px; color: var(--accent); font-size: 20px; }
+
+  /* CUSTOM: revenue bars */
+  .revenue-bar { display: flex; align-items: center; gap: 12px; margin: 8px 0; }
+  .revenue-bar .bar-label { font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); min-width: 120px; text-align: right; }
+  .revenue-bar .bar-track { flex: 1; height: 24px; background: var(--surface2); border-radius: 6px; overflow: hidden; }
+  .revenue-bar .bar-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 8px; font-family: var(--font-mono); font-size: 11px; color: var(--bg); font-weight: 600; }
+
+  /* RESPONSIVE */
+  @media (max-height: 700px) {
+    .slide { padding: clamp(24px, 4vh, 40px) clamp(32px, 6vw, 80px); }
+    .slide__display { font-size: clamp(36px, 8vw, 72px); }
+  }
+  @media (max-width: 768px) {
+    .slide--content .slide__inner { grid-template-columns: 1fr; }
+    .slide--split .slide__panels { grid-template-columns: 1fr; }
+    .slide--dashboard .slide__kpis { grid-template-columns: repeat(2, 1fr); }
+    .feature-grid { grid-template-columns: 1fr; }
+    .team-grid { grid-template-columns: repeat(2, 1fr); }
+    .timeline { flex-direction: column; }
+    .timeline-arrow { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <!-- SLIDE 1: TITLE -->
+  <section class="slide slide--title">
+    <svg class="slide__decor" style="top:0;right:0;" width="120" height="120" viewBox="0 0 120 120">
+      <line x1="120" y1="0" x2="120" y2="40" stroke="var(--accent)" stroke-width="2" opacity="0.15"/>
+      <line x1="80" y1="0" x2="120" y2="0" stroke="var(--accent)" stroke-width="2" opacity="0.15"/>
+    </svg>
+    <svg class="slide__decor" style="bottom:0;left:0;" width="120" height="120" viewBox="0 0 120 120">
+      <line x1="0" y1="80" x2="0" y2="120" stroke="var(--accent)" stroke-width="2" opacity="0.15"/>
+      <line x1="0" y1="120" x2="40" y2="120" stroke="var(--accent)" stroke-width="2" opacity="0.15"/>
+    </svg>
+    <div class="reveal">
+      <p class="slide__subtitle" style="margin-bottom:clamp(16px,2vh,32px);">Investor Pitch &mdash; March 2026</p>
+    </div>
+    <h1 class="slide__display reveal">CareHive</h1>
+    <div class="reveal">
+      <p class="slide__subtitle" style="margin-top:clamp(16px,2vh,32px);">Certainty That Mum Is Okay</p>
+    </div>
+    <div class="reveal">
+      <p class="slide__body" style="margin-top:clamp(12px,1.5vh,24px); max-width:600px;">AI-Powered Elder Care Coordination for the Sandwich Generation</p>
+    </div>
+  </section>
+
+  <!-- SLIDE 2: THE PROBLEM -->
+  <section class="slide slide--dashboard" style="background-image:radial-gradient(ellipse at 70% 30%, var(--red-dim) 0%, transparent 40%);">
+    <p class="slide__label reveal">The Problem</p>
+    <h2 class="slide__heading reveal">Singapore&rsquo;s Silent Aging Crisis</h2>
+    <div class="slide__kpis" style="margin-top:clamp(12px,2vh,24px);">
+      <div class="slide__kpi reveal">
+        <div class="slide__kpi-val" style="color:var(--red);">1 in 4</div>
+        <div class="slide__kpi-label">Singaporeans will be 65+ by 2030</div>
+      </div>
+      <div class="slide__kpi reveal">
+        <div class="slide__kpi-val" style="color:var(--accent);">850K</div>
+        <div class="slide__kpi-label">Sandwich Generation Adults</div>
+        <div class="slide__kpi-trend" style="color:var(--text-dim);">aged 30&ndash;49, caring for parents &amp; children</div>
+      </div>
+      <div class="slide__kpi reveal">
+        <div class="slide__kpi-val" style="color:var(--blue);">83K</div>
+        <div class="slide__kpi-label">Elderly Living Alone</div>
+        <div class="slide__kpi-trend" style="color:var(--text-dim);">single-person households, 2023</div>
+      </div>
+      <div class="slide__kpi reveal">
+        <div class="slide__kpi-val" style="color:var(--red);">S$4.5K</div>
+        <div class="slide__kpi-label">Monthly Home Care Cost</div>
+        <div class="slide__kpi-trend" style="color:var(--text-dim);">vs S$10K median household income</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3: THE HUMAN STORY -->
+  <section class="slide slide--quote" style="background-image:radial-gradient(ellipse at 50% 50%, var(--accent-dim) 0%, transparent 35%);">
+    <div class="slide__quote-mark reveal">&ldquo;</div>
+    <blockquote class="reveal">
+      Mei Lin is 38. She works full-time, raises two kids, and lives 20 minutes from her 72-year-old mother who takes six medications daily and lives alone. Every morning she wonders: <em style="color:var(--accent);">Did Mum take her pills? Is she eating? Did she fall?</em>
+    </blockquote>
+    <cite class="reveal">&mdash; One of 850,000 Singaporeans in the Sandwich Generation</cite>
+  </section>
+
+  <!-- SLIDE 4: THE MARKET -->
+  <section class="slide slide--dashboard" style="background-image:radial-gradient(ellipse at 30% 60%, var(--accent-dim) 0%, transparent 40%);">
+    <p class="slide__label reveal">Market Opportunity</p>
+    <h2 class="slide__heading reveal">ASEAN&rsquo;s $2.5 Trillion Aging Tsunami</h2>
+    <div class="slide__kpis" style="margin-top:clamp(12px,2vh,24px);">
+      <div class="slide__kpi reveal">
+        <div class="slide__kpi-val" style="color:var(--accent);">600M</div>
+        <div class="slide__kpi-label">TAM &mdash; Elderly 60+ in ASEAN+NEA by 2030</div>
+      </div>
+      <div class="slide__kpi reveal">
+        <div class="slide__kpi-val" style="color:var(--blue);">4.4M</div>
+        <div class="slide__kpi-label">SAM &mdash; Singapore Families + NLB Members</div>
+      </div>
+      <div class="slide__kpi reveal">
+        <div class="slide__kpi-val" style="color:var(--green);">850K</div>
+        <div class="slide__kpi-label">SOM &mdash; SG Sandwich Generation</div>
+      </div>
+      <div class="slide__kpi reveal">
+        <div class="slide__kpi-val" style="color:var(--accent);">$2.5T</div>
+        <div class="slide__kpi-label">Annual APAC Eldercare Cost by 2030</div>
+        <div class="slide__kpi-trend" style="color:var(--text-dim);">McKinsey estimate</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 5: CURRENT SOLUTIONS FAIL -->
+  <section class="slide slide--split">
+    <div class="slide__panels">
+      <div class="slide__panel slide__panel--primary">
+        <p class="slide__label reveal" style="color:var(--red);">What Families Use Today</p>
+        <h2 class="slide__heading reveal" style="font-size:clamp(22px,3.5vw,36px);">Current Solutions Fail</h2>
+        <ul class="slide__bullets" style="margin-top:16px;">
+          <li class="reveal"><strong>WhatsApp groups</strong> &mdash; lost messages, no structure, no medication tracking</li>
+          <li class="reveal"><strong>Handwritten logs</strong> &mdash; unreadable, no alerts, no family visibility</li>
+          <li class="reveal"><strong>Phone calls</strong> &mdash; Mum doesn&rsquo;t pick up. Panic sets in.</li>
+          <li class="reveal"><strong>Hope</strong> &mdash; not a care strategy</li>
+        </ul>
+      </div>
+      <div class="slide__panel slide__panel--secondary">
+        <p class="slide__label reveal" style="color:var(--red);">Agency-First = Expensive</p>
+        <h2 class="slide__heading reveal" style="font-size:clamp(22px,3.5vw,36px);">Homage, Ninkatec, Jaga-Me</h2>
+        <ul class="slide__bullets" style="margin-top:16px;">
+          <li class="reveal">S$25&ndash;60/hour &mdash; per-visit, not always-on</li>
+          <li class="reveal">No family coordination dashboard</li>
+          <li class="reveal">No helper empowerment tools</li>
+          <li class="reveal">Reactive (after something goes wrong)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 6: OUR SOLUTION — ECOSYSTEM DIAGRAM -->
+  <section class="slide slide--diagram">
+    <p class="slide__label reveal">Our Solution</p>
+    <h2 class="slide__heading reveal">The CareHive Ecosystem</h2>
+    <div class="mermaid-wrap reveal">
+      <div class="zoom-controls">
+        <button onclick="zoomDiagram(this,1.2)" title="Zoom in">+</button>
+        <button onclick="zoomDiagram(this,0.8)" title="Zoom out">&minus;</button>
+        <button onclick="resetZoom(this)" title="Reset">&#8634;</button>
+      </div>
+      <pre class="mermaid">
+graph TB
+  subgraph Products
+    HL["HiveLink<br/>Family Care<br/>Coordination"]
+    HO["HiveOS<br/>SAC/AAC<br/>B2B SaaS"]
+    HV["HiveVoice<br/>Dialect AI<br/>Companion"]
+    HS["HiveStory<br/>Heritage &amp;<br/>Memory"]
+  end
+
+  subgraph Platform["Shared Platform"]
+    AUTH["Auth &amp; Identity"]
+    DATA["Data Layer"]
+    AI["AI/ML Engine"]
+    COMP["PDPA Compliance"]
+  end
+
+  HL --> AUTH
+  HL --> DATA
+  HO --> DATA
+  HO --> AUTH
+  HV --> AI
+  HV --> DATA
+  HS --> AI
+  HS --> DATA
+
+  classDef product fill:#d4a73a22,stroke:#d4a73a,stroke-width:2px
+  classDef platform fill:#60a5fa22,stroke:#60a5fa,stroke-width:2px
+
+  class HL,HO,HV,HS product
+  class AUTH,DATA,AI,COMP platform
+      </pre>
+    </div>
+  </section>
+
+  <!-- SLIDE 7: HIVELINK -->
+  <section class="slide slide--content" style="background-image:radial-gradient(ellipse at 20% 80%, var(--accent-dim) 0%, transparent 45%);">
+    <div class="slide__inner" style="grid-template-columns:1fr 1fr;">
+      <div>
+        <p class="slide__label reveal">Product #1</p>
+        <h2 class="slide__heading reveal">HiveLink</h2>
+        <p class="slide__body reveal" style="margin:12px 0;">Family care coordination &mdash; the nerve centre for every care circle. S$0&ndash;39.90/month.</p>
+        <ul class="slide__bullets">
+          <li class="reveal">&#x1F3E0; <strong>Family Dashboard</strong> &mdash; real-time status for every family member worldwide</li>
+          <li class="reveal">&#x1F48A; <strong>Smart Medication</strong> &mdash; visual reminders, refill tracking, drug interaction alerts</li>
+          <li class="reveal">&#x1F198; <strong>SOS Emergency</strong> &mdash; one-tap with smart escalation &amp; fall detection</li>
+          <li class="reveal">&#x1F4F1; <strong>Elderly Tablet UI</strong> &mdash; 24pt+ fonts, 3-tap max, ambient photo frame</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="slide__bullets" style="margin-top:50px;">
+          <li class="reveal">&#x1F469;&#x200D;&#x2695;&#xFE0F; <strong>Helper Hub</strong> &mdash; task dashboard, care logging, multi-language translation</li>
+          <li class="reveal">&#x1F916; <strong>AI Insights</strong> &mdash; anomaly detection, cognitive decline indicators, burnout alerts</li>
+          <li class="reveal">&#x1F4C4; <strong>Document Vault</strong> &mdash; medical records, prescriptions, insurance in one place</li>
+          <li class="reveal">&#x1F310; <strong>7+ Languages</strong> &mdash; EN, CN, Malay, Tamil, Bahasa, Thai, Tagalog</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 8: HIVEOS -->
+  <section class="slide slide--content" style="background-image:radial-gradient(ellipse at 80% 20%, var(--blue-dim) 0%, transparent 45%);">
+    <div class="slide__inner" style="grid-template-columns:1fr 1fr;">
+      <div>
+        <p class="slide__label reveal" style="color:var(--blue);">Product #2</p>
+        <h2 class="slide__heading reveal">HiveOS</h2>
+        <p class="slide__body reveal" style="margin:12px 0;">B2B SaaS for 200+ Senior Activity Centres &amp; Active Ageing Centres. S$200&ndash;800/month per centre.</p>
+        <ul class="slide__bullets">
+          <li class="reveal"><strong>Digital Attendance</strong> &mdash; QR/NFC check-in replacing paper sign-in</li>
+          <li class="reveal"><strong>Programme Scheduling</strong> &mdash; drag-and-drop, capacity management</li>
+          <li class="reveal"><strong>Health Vitals Logging</strong> &mdash; BP, glucose, weight with trend alerts</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="slide__bullets" style="margin-top: 50px;">
+          <li class="reveal"><strong>Automated AIC Reporting</strong> &mdash; subsidy reports in minutes, not days</li>
+          <li class="reveal"><strong>Family Visibility Portal</strong> &mdash; parents see SAC activities &amp; vitals</li>
+          <li class="reveal"><strong>Staff Dashboard</strong> &mdash; scheduling, volunteer mgmt, incident reporting</li>
+        </ul>
+        <div class="reveal" style="margin-top:24px; padding:16px; background:var(--surface); border:1px solid var(--border); border-radius:10px;">
+          <p class="slide__label" style="color:var(--blue);">Market</p>
+          <p style="font-size:18px;">200+ SACs/AACs in Singapore<br>2,000+ across ASEAN</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 9: HIVEVOICE -->
+  <section class="slide slide--content" style="background-image:radial-gradient(ellipse at 50% 80%, var(--green-dim) 0%, transparent 45%);">
+    <div class="slide__inner" style="grid-template-columns:2fr 1fr;">
+      <div>
+        <p class="slide__label reveal" style="color:var(--green);">Premium Feature</p>
+        <h2 class="slide__heading reveal">HiveVoice &mdash; Dialect AI Companion</h2>
+        <p class="slide__body reveal" style="margin:12px 0;">The first voice AI that speaks to elderly Singaporeans in <em>their</em> language. Powered by NLB&rsquo;s oral history archives.</p>
+        <ul class="slide__bullets">
+          <li class="reveal"><strong>Dialect-fluent conversation</strong> &mdash; Hokkien, Cantonese, Teochew, Hakka</li>
+          <li class="reveal"><strong>Plus</strong> Mandarin, Malay &amp; Tamil</li>
+          <li class="reveal"><strong>NLB Digital Archive</strong> &mdash; reminiscence therapy with real historical content</li>
+          <li class="reveal"><strong>Daily companionship</strong> &mdash; proactive check-ins, stories, gentle medication reminders</li>
+          <li class="reveal"><strong>Cognitive engagement</strong> &mdash; voice-based games and exercises</li>
+        </ul>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;">
+        <div class="reveal" style="padding:20px; background:var(--surface); border:1px solid var(--border); border-radius:10px; text-align:center; width:100%;">
+          <p style="font-size:14px; color:var(--text-dim); font-family:var(--font-mono);">83,000 seniors living alone</p>
+          <p style="font-size:24px; margin-top:8px; color:var(--green);">Need companionship</p>
+        </div>
+        <div class="reveal" style="padding:20px; background:var(--surface); border:1px solid var(--border); border-radius:10px; text-align:center; width:100%;">
+          <p style="font-size:14px; color:var(--text-dim); font-family:var(--font-mono);">NLB Partnership</p>
+          <p style="font-size:24px; margin-top:8px; color:var(--accent);">4.4M members</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 10: WHY WE WIN -->
+  <section class="slide slide--dashboard" style="background-image:radial-gradient(ellipse at 50% 50%, var(--accent-dim) 0%, transparent 40%);">
+    <p class="slide__label reveal">Competitive Moat</p>
+    <h2 class="slide__heading reveal">Why CareHive Wins</h2>
+    <div class="slide__kpis" style="margin-top:clamp(12px,2vh,24px);">
+      <div class="slide__kpi reveal">
+        <div class="slide__kpi-val" style="color:var(--green); font-size:clamp(28px,4vw,48px);">S$10&ndash;20</div>
+        <div class="slide__kpi-label">Software-First Pricing / month</div>
+        <div class="slide__kpi-trend" style="color:var(--red);">vs S$800&ndash;4,500/mo for home care</div>
+      </div>
+      <div class="slide__kpi reveal">
+        <div class="slide__kpi-val" style="color:var(--accent); font-size:clamp(28px,4vw,48px);">Dialect AI</div>
+        <div class="slide__kpi-label">Uncopyable Cultural Moat</div>
+        <div class="slide__kpi-trend" style="color:var(--text-dim);">Hokkien, Cantonese, Teochew + NLB archives</div>
+      </div>
+      <div class="slide__kpi reveal">
+        <div class="slide__kpi-val" style="color:var(--blue); font-size:clamp(28px,4vw,48px);">261K</div>
+        <div class="slide__kpi-label">Foreign Domestic Helpers</div>
+        <div class="slide__kpi-trend" style="color:var(--text-dim);">empowered, not replaced</div>
+      </div>
+      <div class="slide__kpi reveal">
+        <div class="slide__kpi-val" style="color:var(--green); font-size:clamp(28px,4vw,48px);">24/7</div>
+        <div class="slide__kpi-label">Always-On Platform</div>
+        <div class="slide__kpi-trend" style="color:var(--text-dim);">not scheduled hourly visits</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 11: COMPETITOR LANDSCAPE -->
+  <section class="slide slide--table">
+    <p class="slide__label reveal">Competitor Landscape</p>
+    <h2 class="slide__heading reveal">CareHive vs The Market</h2>
+    <div class="table-wrap reveal" style="flex:1; min-height:0; margin-top:clamp(8px,1.5vh,20px);">
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead><tr><th>Capability</th><th style="color:var(--accent);">CareHive</th><th>Homage</th><th>Ninkatec</th><th>Medisafe</th><th>Biofourmis</th></tr></thead>
+          <tbody>
+            <tr><td>Primary Model</td><td style="color:var(--accent);">Software platform</td><td>Manpower marketplace</td><td>Clinical home care</td><td>Medication app</td><td>Clinical AI</td></tr>
+            <tr><td>Monthly Cost</td><td style="color:var(--green);">S$0&ndash;20</td><td style="color:var(--red);">S$800&ndash;4,500</td><td style="color:var(--red);">S$800&ndash;3,000</td><td>Free&ndash;US$10</td><td>Enterprise</td></tr>
+            <tr><td>Family Dashboard</td><td style="color:var(--green);">&#10003; Full</td><td style="color:var(--red);">&#10007;</td><td style="color:var(--red);">&#10007;</td><td>Limited</td><td style="color:var(--red);">&#10007;</td></tr>
+            <tr><td>Helper Integration</td><td style="color:var(--green);">&#10003; Dedicated Hub</td><td style="color:var(--red);">&#10007;</td><td style="color:var(--red);">&#10007;</td><td style="color:var(--red);">&#10007;</td><td style="color:var(--red);">&#10007;</td></tr>
+            <tr><td>Dialect AI Voice</td><td style="color:var(--green);">&#10003; Unique</td><td style="color:var(--red);">&#10007;</td><td style="color:var(--red);">&#10007;</td><td style="color:var(--red);">&#10007;</td><td style="color:var(--red);">&#10007;</td></tr>
+            <tr><td>Elderly-Friendly UI</td><td style="color:var(--green);">&#10003; Purpose-built</td><td>N/A</td><td>N/A</td><td style="color:var(--red);">&#10007;</td><td>N/A</td></tr>
+            <tr><td>ASEAN-Ready</td><td style="color:var(--green);">&#10003; 7+ languages</td><td>SG+MY</td><td>SG only</td><td style="color:var(--red);">US-focused</td><td style="color:var(--red);">US-focused</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 12: BUSINESS MODEL -->
+  <section class="slide slide--content" style="background-image:radial-gradient(ellipse at 70% 70%, var(--accent-dim) 0%, transparent 45%);">
+    <div class="slide__inner" style="grid-template-columns:1fr 1fr;">
+      <div>
+        <p class="slide__label reveal">Business Model</p>
+        <h2 class="slide__heading reveal">Four Revenue Engines</h2>
+        <ul class="slide__bullets">
+          <li class="reveal"><strong style="color:var(--accent);">B2C Subscriptions</strong> &mdash; HiveLink: Free &rarr; S$9.90 &rarr; S$19.90 &rarr; S$39.90/mo</li>
+          <li class="reveal"><strong style="color:var(--blue);">B2B SaaS</strong> &mdash; HiveOS: S$200&ndash;800/centre/month for 200+ SACs</li>
+          <li class="reveal"><strong style="color:var(--green);">B2B2C Insurance</strong> &mdash; Insurers pay S$3&ndash;8/policyholder/month. 2.5&times; ROI for them.</li>
+          <li class="reveal"><strong style="color:var(--accent);">Marketplace</strong> &mdash; 10&ndash;15% commission on caregiver bookings, equipment, telehealth</li>
+        </ul>
+      </div>
+      <div>
+        <p class="slide__label reveal">5-Year Revenue</p>
+        <div style="margin-top:12px;">
+          <div class="revenue-bar reveal"><span class="bar-label">Year 1</span><div class="bar-track"><div class="bar-fill" style="width:3%; background:var(--accent);">S$52K</div></div></div>
+          <div class="revenue-bar reveal"><span class="bar-label">Year 2</span><div class="bar-track"><div class="bar-fill" style="width:8%; background:var(--accent);">S$600K</div></div></div>
+          <div class="revenue-bar reveal"><span class="bar-label">Year 3</span><div class="bar-track"><div class="bar-fill" style="width:20%; background:var(--accent);">S$2.8M</div></div></div>
+          <div class="revenue-bar reveal"><span class="bar-label">Year 4</span><div class="bar-track"><div class="bar-fill" style="width:50%; background:var(--accent);">S$8.4M</div></div></div>
+          <div class="revenue-bar reveal"><span class="bar-label">Year 5</span><div class="bar-track"><div class="bar-fill" style="width:100%; background:var(--accent);">S$19.4M</div></div></div>
+        </div>
+        <p class="reveal" style="font-family:var(--font-mono); font-size:12px; color:var(--text-dim); margin-top:12px;">Break-even: Month 14&ndash;18 &bull; LTV:CAC target &gt;15:1</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 13: GO-TO-MARKET -->
+  <section class="slide" style="background-image:radial-gradient(ellipse at 30% 30%, var(--green-dim) 0%, transparent 40%);">
+    <p class="slide__label reveal">Go-to-Market</p>
+    <h2 class="slide__heading reveal">From 100 Families to ASEAN</h2>
+    <div class="timeline" style="margin-top:clamp(16px,2vh,24px);">
+      <div class="timeline-step reveal">
+        <div class="phase">Phase 1 &bull; Month 1&ndash;3</div>
+        <h4>Founder-Led</h4>
+        <p>100 families via personal networks, community centres, polyclinics. 9 co-founders &times; 5 families each.</p>
+      </div>
+      <div class="timeline-arrow reveal">&rarr;</div>
+      <div class="timeline-step reveal">
+        <div class="phase">Phase 2 &bull; Month 3&ndash;9</div>
+        <h4>Partnerships</h4>
+        <p>1,000 users. SAC pilots, helper agency bundles, content marketing, media coverage (CNA, Straits Times).</p>
+      </div>
+      <div class="timeline-arrow reveal">&rarr;</div>
+      <div class="timeline-step reveal">
+        <div class="phase">Phase 3 &bull; Month 9&ndash;18</div>
+        <h4>Scale</h4>
+        <p>10,000 users. AIC partnership, insurance B2B2C deals, corporate wellness, Malaysia &amp; Indonesia launch.</p>
+      </div>
+    </div>
+    <div class="reveal" style="margin-top:clamp(16px,2vh,24px); display:flex; gap:16px; flex-wrap:wrap;">
+      <div style="padding:12px 20px; background:var(--surface); border:1px solid var(--border); border-radius:8px; font-size:14px;">
+        <span style="color:var(--accent); font-weight:600;">NLB Partnership</span> &mdash; 4.4M members, zero-CAC distribution
+      </div>
+      <div style="padding:12px 20px; background:var(--surface); border:1px solid var(--border); border-radius:8px; font-size:14px;">
+        <span style="color:var(--green); font-weight:600;">Insurance Channel</span> &mdash; Income, Great Eastern, AIA
+      </div>
+      <div style="padding:12px 20px; background:var(--surface); border:1px solid var(--border); border-radius:8px; font-size:14px;">
+        <span style="color:var(--blue); font-weight:600;">SGO/AIC Grants</span> &mdash; Non-dilutive funding + endorsement
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 14: TRACTION & MILESTONES -->
+  <section class="slide slide--split">
+    <div class="slide__panels">
+      <div class="slide__panel slide__panel--primary">
+        <p class="slide__label reveal" style="color:var(--green);">What We&rsquo;ve Done</p>
+        <h2 class="slide__heading reveal" style="font-size:clamp(22px,3.5vw,36px);">Traction to Date</h2>
+        <ul class="slide__bullets" style="margin-top:16px;">
+          <li class="reveal"><strong>9 co-founders</strong> committed (sweat equity, no salary)</li>
+          <li class="reveal"><strong>Comprehensive BRD</strong> &mdash; 50+ pages, investor-ready</li>
+          <li class="reveal"><strong>MVP architecture</strong> designed &amp; tech stack selected</li>
+          <li class="reveal"><strong>IP strategy</strong> &mdash; trademarks, patents, domains mapped</li>
+          <li class="reveal"><strong>Compliance roadmap</strong> &mdash; PDPA, HIPAA-aligned, SOC 2 path</li>
+        </ul>
+      </div>
+      <div class="slide__panel slide__panel--secondary">
+        <p class="slide__label reveal" style="color:var(--accent);">12-Month Targets</p>
+        <h2 class="slide__heading reveal" style="font-size:clamp(22px,3.5vw,36px);">Where We&rsquo;re Going</h2>
+        <ul class="slide__bullets" style="margin-top:16px;">
+          <li class="reveal">Month 3: MVP live, <strong>50 families</strong></li>
+          <li class="reveal">Month 6: <strong>100+ paying</strong>, MRR S$1K+</li>
+          <li class="reveal">Month 9: HiveOS pilot with <strong>3&ndash;5 SACs</strong></li>
+          <li class="reveal">Month 12: <strong>5,000 users</strong>, <strong>500 paying</strong>, MRR S$7K+</li>
+          <li class="reveal">Month 12: <strong>Malaysia soft launch</strong></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 15: FINANCIAL ASK -->
+  <section class="slide slide--dashboard" style="background-image:radial-gradient(ellipse at 50% 30%, var(--accent-dim) 0%, transparent 50%);">
+    <p class="slide__label reveal">The Ask</p>
+    <h2 class="slide__heading reveal">S$700K for 10% Equity</h2>
+    <div class="slide__kpis" style="margin-top:clamp(12px,2vh,24px);">
+      <div class="slide__kpi reveal" style="border-left:3px solid var(--accent);">
+        <div class="slide__kpi-val" style="color:var(--accent);">S$200K</div>
+        <div class="slide__kpi-label">Tranche 1 &mdash; for 5%</div>
+        <div class="slide__kpi-trend" style="color:var(--text-dim);">S$4M pre-money &bull; Months 1&ndash;6</div>
+      </div>
+      <div class="slide__kpi reveal" style="border-left:3px solid var(--green);">
+        <div class="slide__kpi-val" style="color:var(--green);">S$500K</div>
+        <div class="slide__kpi-label">Tranche 2 &mdash; for 5%</div>
+        <div class="slide__kpi-trend" style="color:var(--text-dim);">S$10M pre-money &bull; Months 6&ndash;18</div>
+      </div>
+      <div class="slide__kpi reveal" style="border-left:3px solid var(--blue);">
+        <div class="slide__kpi-val" style="color:var(--blue);">2.5&times;</div>
+        <div class="slide__kpi-label">Valuation Step-Up</div>
+        <div class="slide__kpi-trend" style="color:var(--text-dim);">T1 &rarr; T2 on PMF milestones</div>
+      </div>
+      <div class="slide__kpi reveal" style="border-left:3px solid var(--accent);">
+        <div class="slide__kpi-val" style="color:var(--accent);">18mo</div>
+        <div class="slide__kpi-label">Runway</div>
+        <div class="slide__kpi-trend" style="color:var(--text-dim);">Break-even path at Month 14&ndash;18</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 16: USE OF FUNDS -->
+  <section class="slide slide--dashboard" style="background-image:radial-gradient(ellipse at 80% 70%, var(--accent-dim) 0%, transparent 40%);">
+    <p class="slide__label reveal">Use of Funds</p>
+    <h2 class="slide__heading reveal">Tranche 1: S$200K Allocation</h2>
+    <div class="slide__kpis" style="margin-top:clamp(12px,2vh,24px);">
+      <div class="slide__kpi reveal">
+        <div class="slide__kpi-val" style="color:var(--accent); font-size:clamp(28px,4vw,48px);">S$47K</div>
+        <div class="slide__kpi-label">Product Development</div>
+        <div class="slide__kpi-trend" style="color:var(--text-dim);">23.7% &mdash; UI/UX, infra, QA, APIs</div>
+      </div>
+      <div class="slide__kpi reveal">
+        <div class="slide__kpi-val" style="color:var(--blue); font-size:clamp(28px,4vw,48px);">S$47K</div>
+        <div class="slide__kpi-label">Marketing &amp; Launch</div>
+        <div class="slide__kpi-trend" style="color:var(--text-dim);">23.5% &mdash; ads, PR, community, brand</div>
+      </div>
+      <div class="slide__kpi reveal">
+        <div class="slide__kpi-val" style="color:var(--green); font-size:clamp(28px,4vw,48px);">S$24K</div>
+        <div class="slide__kpi-label">Compliance</div>
+        <div class="slide__kpi-trend" style="color:var(--text-dim);">12% &mdash; PDPA, legal, pen testing</div>
+      </div>
+      <div class="slide__kpi reveal">
+        <div class="slide__kpi-val" style="color:var(--accent); font-size:clamp(28px,4vw,48px);">S$18K</div>
+        <div class="slide__kpi-label">Key Hires</div>
+        <div class="slide__kpi-trend" style="color:var(--text-dim);">9% &mdash; community manager</div>
+      </div>
+      <div class="slide__kpi reveal">
+        <div class="slide__kpi-val" style="color:var(--text-dim); font-size:clamp(28px,4vw,48px);">S$19K</div>
+        <div class="slide__kpi-label">Operations</div>
+        <div class="slide__kpi-trend" style="color:var(--text-dim);">9.5% &mdash; office, accounting, misc</div>
+      </div>
+      <div class="slide__kpi reveal">
+        <div class="slide__kpi-val" style="color:var(--red); font-size:clamp(28px,4vw,48px);">S$36K</div>
+        <div class="slide__kpi-label">Contingency</div>
+        <div class="slide__kpi-trend" style="color:var(--text-dim);">17.8% buffer</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 17: THE TEAM -->
+  <section class="slide" style="background-image:radial-gradient(ellipse at 50% 50%, var(--accent-dim) 0%, transparent 40%);">
+    <p class="slide__label reveal">The Team</p>
+    <h2 class="slide__heading reveal">9 Co-Founders, One Mission</h2>
+    <p class="slide__body reveal" style="margin:8px 0 16px;">Diverse skills across engineering, product, design, business &amp; domain expertise. All sweat equity &mdash; no salaries until funded.</p>
+    <div class="team-grid">
+      <div class="team-card reveal"><div class="name">Co-Founder 1</div><div class="role">CEO / Strategy</div></div>
+      <div class="team-card reveal"><div class="name">Co-Founder 2</div><div class="role">CTO / Architecture</div></div>
+      <div class="team-card reveal"><div class="name">Co-Founder 3</div><div class="role">Product Lead</div></div>
+      <div class="team-card reveal"><div class="name">Co-Founder 4</div><div class="role">UX / Design</div></div>
+      <div class="team-card reveal"><div class="name">Co-Founder 5</div><div class="role">Backend Engineering</div></div>
+      <div class="team-card reveal"><div class="name">Co-Founder 6</div><div class="role">Mobile Engineering</div></div>
+      <div class="team-card reveal"><div class="name">Co-Founder 7</div><div class="role">AI / ML</div></div>
+      <div class="team-card reveal"><div class="name">Co-Founder 8</div><div class="role">Marketing / GTM</div></div>
+      <div class="team-card reveal"><div class="name">Co-Founder 9</div><div class="role">Operations / Compliance</div></div>
+    </div>
+    <p class="reveal" style="font-family:var(--font-mono); font-size:12px; color:var(--text-dim); margin-top:16px;">Advisory Board recruiting: Geriatrician &bull; AI Leader &bull; Gov Policy &bull; VC Advisor &bull; ASEAN Expansion</p>
+  </section>
+
+  <!-- SLIDE 18: VISION -->
+  <section class="slide slide--divider" style="background-image:radial-gradient(ellipse at 50% 50%, var(--accent-dim) 0%, transparent 40%);">
+    <span class="slide__number">&#x2192;</span>
+    <div>
+      <p class="slide__label reveal">5-Year Vision</p>
+      <h2 class="slide__heading reveal" style="font-size:clamp(32px,6vw,56px);">From Singapore to ASEAN</h2>
+      <div class="reveal" style="margin-top:20px; display:flex; gap:16px; flex-wrap:wrap;">
+        <div style="padding:12px 20px; background:var(--surface); border:1px solid var(--border); border-radius:8px;">
+          <span style="font-family:var(--font-mono); font-size:11px; color:var(--accent);">2026</span><br>
+          <span style="font-size:16px;">Singapore: 5K users</span>
+        </div>
+        <div style="padding:12px 20px; background:var(--surface); border:1px solid var(--border); border-radius:8px;">
+          <span style="font-family:var(--font-mono); font-size:11px; color:var(--accent);">2027</span><br>
+          <span style="font-size:16px;">+ Malaysia, Indonesia</span>
+        </div>
+        <div style="padding:12px 20px; background:var(--surface); border:1px solid var(--border); border-radius:8px;">
+          <span style="font-family:var(--font-mono); font-size:11px; color:var(--accent);">2028</span><br>
+          <span style="font-size:16px;">+ Thailand, Philippines</span>
+        </div>
+        <div style="padding:12px 20px; background:var(--surface); border:1px solid var(--border); border-radius:8px;">
+          <span style="font-family:var(--font-mono); font-size:11px; color:var(--accent);">2030</span><br>
+          <span style="font-size:16px;">800K users &bull; S$19.4M ARR</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 19: CLOSE -->
+  <section class="slide slide--bleed">
+    <div class="slide__bg slide__bg--gradient"></div>
+    <div class="slide__scrim"></div>
+    <div class="slide__content" style="text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+      <p class="slide__label reveal" style="color:rgba(255,255,255,0.5);">Our Promise</p>
+      <h2 class="reveal" style="font-size:clamp(28px,5vw,52px); color:#ffffff; line-height:1.2; max-width:800px; text-wrap:balance;">
+        CareHive exists to give the sandwich generation <span style="color:var(--accent);">certainty</span> that Mum is okay.
+      </h2>
+      <p class="reveal" style="font-family:var(--font-mono); font-size:14px; color:rgba(255,255,255,0.5); margin-top:clamp(24px,4vh,48px); letter-spacing:1px;">
+        CAREHIVE &mdash; INVESTOR PITCH &mdash; MARCH 2026
+      </p>
+      <p class="reveal" style="font-size:18px; color:rgba(255,255,255,0.7); margin-top:12px;">
+        carehive.sg &bull; hello@carehive.sg
+      </p>
+    </div>
+  </section>
+
+</div><!-- /deck -->
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    look: 'classic',
+    themeVariables: {
+      primaryColor: isDark ? '#1d2b52' : '#fef3e0',
+      primaryBorderColor: isDark ? '#d4a73a' : '#b8860b',
+      primaryTextColor: isDark ? '#e8e4d8' : '#1a1814',
+      secondaryColor: isDark ? '#162040' : '#eff6ff',
+      secondaryBorderColor: isDark ? '#60a5fa' : '#2563eb',
+      secondaryTextColor: isDark ? '#e8e4d8' : '#1a1814',
+      tertiaryColor: isDark ? '#0f2620' : '#f0fdf4',
+      tertiaryBorderColor: isDark ? '#4ade80' : '#16a34a',
+      tertiaryTextColor: isDark ? '#e8e4d8' : '#1a1814',
+      lineColor: isDark ? '#9a9484' : '#7a7468',
+      fontSize: '16px',
+      fontFamily: 'var(--font-body)',
+      noteBkgColor: isDark ? '#1d2b52' : '#fef3e0',
+      noteTextColor: isDark ? '#e8e4d8' : '#1a1814',
+      noteBorderColor: isDark ? '#d4a73a' : '#b8860b',
+    }
+  });
+
+  function autoFit() {
+    document.querySelectorAll('.mermaid svg').forEach(function(svg) {
+      svg.removeAttribute('height');
+      svg.style.width = '100%';
+      svg.style.maxWidth = '100%';
+      svg.style.height = 'auto';
+      svg.parentElement.style.width = '100%';
+    });
+    document.querySelectorAll('.slide__kpi-val').forEach(function(el) {
+      if (el.scrollWidth > el.clientWidth) {
+        var s = el.clientWidth / el.scrollWidth;
+        el.style.transform = 'scale(' + s + ')';
+        el.style.transformOrigin = 'left top';
+      }
+    });
+  }
+
+  mermaid.run().then(function() {
+    autoFit();
+    new SlideEngine();
+  });
+</script>
+
+<script>
+  // Mermaid zoom controls
+  function updateZoomState(w){var t=w.querySelector('.mermaid');var z=parseFloat(t.dataset.zoom||'1');w.classList.toggle('is-zoomed',z>1);}
+  function zoomDiagram(b,f){var w=b.closest('.mermaid-wrap');var t=w.querySelector('.mermaid');var c=parseFloat(t.dataset.zoom||'1');var n=Math.min(Math.max(c*f,0.3),5);t.dataset.zoom=n;t.style.transform='scale('+n+')';updateZoomState(w);}
+  function resetZoom(b){var w=b.closest('.mermaid-wrap');var t=w.querySelector('.mermaid');t.dataset.zoom='1';t.style.transform='scale(1)';updateZoomState(w);}
+  document.querySelectorAll('.mermaid-wrap').forEach(function(w){w.addEventListener('wheel',function(e){if(!e.ctrlKey&&!e.metaKey)return;e.preventDefault();var t=w.querySelector('.mermaid');var c=parseFloat(t.dataset.zoom||'1');var f=e.deltaY<0?1.1:0.9;var n=Math.min(Math.max(c*f,0.3),5);t.dataset.zoom=n;t.style.transform='scale('+n+')';updateZoomState(w);},{passive:false});var sX,sY,sL,sT;w.addEventListener('mousedown',function(e){if(e.target.closest('.zoom-controls'))return;var t=w.querySelector('.mermaid');if(parseFloat(t.dataset.zoom||'1')<=1)return;w.classList.add('is-panning');sX=e.clientX;sY=e.clientY;sL=w.scrollLeft;sT=w.scrollTop;});window.addEventListener('mousemove',function(e){if(!w.classList.contains('is-panning'))return;w.scrollLeft=sL-(e.clientX-sX);w.scrollTop=sT-(e.clientY-sY);});window.addEventListener('mouseup',function(){w.classList.remove('is-panning');});});
+
+  // SlideEngine
+  function SlideEngine(){
+    this.deck=document.querySelector('.deck');
+    this.slides=[].slice.call(document.querySelectorAll('.slide'));
+    this.current=0;
+    this.total=this.slides.length;
+    this.buildChrome();
+    this.bindEvents();
+    this.observe();
+    this.update();
+  }
+  SlideEngine.prototype.buildChrome=function(){
+    var bar=document.createElement('div');bar.className='deck-progress';document.body.appendChild(bar);this.bar=bar;
+    var dots=document.createElement('div');dots.className='deck-dots';var self=this;
+    this.slides.forEach(function(_,i){var d=document.createElement('button');d.className='deck-dot';d.title='Slide '+(i+1);d.onclick=function(){self.goTo(i);};dots.appendChild(d);});
+    document.body.appendChild(dots);this.dots=[].slice.call(dots.children);
+    var ctr=document.createElement('div');ctr.className='deck-counter';document.body.appendChild(ctr);this.counter=ctr;
+    var hints=document.createElement('div');hints.className='deck-hints';hints.textContent='\u2190 \u2192 or scroll to navigate';document.body.appendChild(hints);this.hints=hints;
+    this.hintTimer=setTimeout(function(){hints.classList.add('faded');},4000);
+  };
+  SlideEngine.prototype.bindEvents=function(){
+    var self=this;
+    document.addEventListener('keydown',function(e){
+      if(e.target.closest('.mermaid-wrap,.table-scroll,input,textarea,[contenteditable]'))return;
+      if(['ArrowDown','ArrowRight',' ','PageDown'].indexOf(e.key)>-1){e.preventDefault();self.next();}
+      else if(['ArrowUp','ArrowLeft','PageUp'].indexOf(e.key)>-1){e.preventDefault();self.prev();}
+      else if(e.key==='Home'){e.preventDefault();self.goTo(0);}
+      else if(e.key==='End'){e.preventDefault();self.goTo(self.total-1);}
+      self.fadeHints();
+    });
+    var tY;
+    this.deck.addEventListener('touchstart',function(e){tY=e.touches[0].clientY;},{passive:true});
+    this.deck.addEventListener('touchend',function(e){var dy=tY-e.changedTouches[0].clientY;if(Math.abs(dy)>50){dy>0?self.next():self.prev();}});
+  };
+  SlideEngine.prototype.observe=function(){
+    var self=this;
+    var obs=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting){entry.target.classList.add('visible');self.current=self.slides.indexOf(entry.target);self.update();}});},{threshold:0.5});
+    this.slides.forEach(function(s){obs.observe(s);});
+  };
+  SlideEngine.prototype.goTo=function(i){this.slides[Math.max(0,Math.min(i,this.total-1))].scrollIntoView({behavior:'smooth'});};
+  SlideEngine.prototype.next=function(){if(this.current<this.total-1)this.goTo(this.current+1);};
+  SlideEngine.prototype.prev=function(){if(this.current>0)this.goTo(this.current-1);};
+  SlideEngine.prototype.update=function(){
+    this.bar.style.width=((this.current+1)/this.total*100)+'%';
+    var c=this.current;this.dots.forEach(function(d,i){d.classList.toggle('active',i===c);});
+    this.counter.textContent=(this.current+1)+' / '+this.total;
+  };
+  SlideEngine.prototype.fadeHints=function(){clearTimeout(this.hintTimer);this.hints.classList.add('faded');};
+</script>
+
+</body>
+</html>
