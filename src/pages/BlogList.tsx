@@ -20,11 +20,9 @@ export default function BlogList() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-              <svg className="w-4.5 h-4.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
+              <span className="text-white text-xs font-bold leading-none">CH</span>
             </div>
-            <span className="text-lg font-semibold tracking-tight">ElderSync</span>
+            <span className="text-lg font-semibold tracking-tight">CareHive</span>
           </Link>
           <div className="hidden md:flex items-center gap-8 text-sm">
             <Link to="/" className="text-gray-500 hover:text-gray-900 transition-colors">Home</Link>
@@ -90,13 +88,11 @@ export default function BlogList() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2.5">
               <div className="w-7 h-7 rounded-md bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
-                <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                </svg>
+                <span className="text-white text-[10px] font-bold leading-none">CH</span>
               </div>
-              <span className="text-base font-semibold text-white tracking-tight">ElderSync</span>
+              <span className="text-base font-semibold text-white tracking-tight">CareHive</span>
             </div>
-            <p className="text-xs text-gray-600">&copy; 2026 ElderSync. All rights reserved.</p>
+            <p className="text-xs text-gray-600">&copy; 2026 CareHive. All rights reserved.</p>
           </div>
         </div>
       </footer>

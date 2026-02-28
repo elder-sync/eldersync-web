@@ -20,32 +20,32 @@ function App() {
     {
       question: 'How do I monitor my elderly parents remotely in Singapore?',
       answer:
-        'ElderSync lets you monitor your elderly parents remotely through daily check-ins, medication tracking, and activity updates — all from your smartphone. Your parent simply taps a button on their tablet to confirm they\'re doing well, and you receive real-time updates throughout the day. For emergencies, our SOS feature sends instant alerts with location information to all family members.',
+        'CareHive HiveLink lets you monitor your elderly parents remotely through daily check-ins, medication tracking, and activity updates — all from your smartphone. Your parent simply taps a button on their tablet to confirm they\'re doing well, and you receive real-time updates throughout the day. For emergencies, our SOS feature sends instant alerts with location information to all family members.',
     },
     {
       question: 'How can I make sure my elderly parent takes their medication?',
       answer:
-        'ElderSync sends gentle, timely medication reminders to your parent\'s device with large, easy-to-read instructions. When they take their medication, they can confirm it with a single tap, and you\'ll see the update on your family dashboard. If a dose is missed, the app sends follow-up reminders and notifies designated family members so someone can check in.',
+        'CareHive HiveLink sends gentle, timely medication reminders to your parent\'s device with large, easy-to-read instructions. When they take their medication, they can confirm it with a single tap, and you\'ll see the update on your family dashboard. If a dose is missed, the app sends follow-up reminders and notifies designated family members so someone can check in.',
     },
     {
       question: 'What is the best elderly care app in Singapore?',
       answer:
-        'ElderSync is designed specifically for Singapore families. Unlike generic health apps, ElderSync combines medication tracking, daily check-ins, emergency SOS alerts, and family coordination in one simple interface. It\'s built with senior-friendly design — big buttons, clear text, and simple navigation — so your parents can use it independently on a tablet.',
+        'CareHive HiveLink is designed specifically for Singapore families. Unlike generic health apps, CareHive combines medication tracking, daily check-ins, emergency SOS alerts, and family coordination in one simple interface. It\'s built with senior-friendly design — big buttons, clear text, and simple navigation — so your parents can use it independently on a tablet.',
     },
     {
-      question: 'How much does ElderSync cost?',
+      question: 'How much does CareHive HiveLink cost?',
       answer:
-        'ElderSync is currently in development and will launch with an affordable pricing model designed for Singapore families. Join our waitlist to be the first to know about pricing and to receive early-bird discounts. Our goal is to make eldercare technology accessible to every family, not just those who can afford expensive monitoring systems.',
+        'CareHive HiveLink is currently in development and will launch with an affordable pricing model designed for Singapore families. Join our waitlist to be the first to know about pricing and to receive early-bird discounts. Our goal is to make eldercare technology accessible to every family, not just those who can afford expensive monitoring systems.',
     },
     {
-      question: 'Is ElderSync suitable for elderly parents with dementia?',
+      question: 'Is CareHive HiveLink suitable for elderly parents with dementia?',
       answer:
-        'Yes, ElderSync is designed with simplicity in mind, making it suitable for parents with mild to moderate cognitive impairment. The senior-facing interface uses large buttons, clear visual cues, and simple one-tap interactions. For families caring for a parent with dementia, the medication reminders and daily check-in features are especially valuable for maintaining routines and ensuring safety.',
+        'Yes, CareHive HiveLink is designed with simplicity in mind, making it suitable for parents with mild to moderate cognitive impairment. The senior-facing interface uses large buttons, clear visual cues, and simple one-tap interactions. For families caring for a parent with dementia, the medication reminders and daily check-in features are especially valuable for maintaining routines and ensuring safety.',
     },
     {
       question: 'How do I coordinate elderly care among siblings?',
       answer:
-        'ElderSync\'s family dashboard gives all family members visibility into your parent\'s daily wellbeing. Everyone can see medication status, check-in responses, and activity updates in real time. You can assign caregiving tasks, share notes, and coordinate schedules — so no one person carries the entire burden. It\'s like a shared family command centre for eldercare.',
+        'CareHive HiveLink\'s family dashboard gives all family members visibility into your parent\'s daily wellbeing. Everyone can see medication status, check-in responses, and activity updates in real time. You can assign caregiving tasks, share notes, and coordinate schedules — so no one person carries the entire burden. It\'s like a shared family command centre for eldercare.',
     },
   ]
 
@@ -56,11 +56,9 @@ function App() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-              <svg className="w-4.5 h-4.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
+              <span className="text-white text-xs font-bold leading-none">CH</span>
             </div>
-            <span className="text-lg font-semibold tracking-tight">ElderSync</span>
+            <span className="text-lg font-semibold tracking-tight">CareHive</span>
           </Link>
           <div className="hidden md:flex items-center gap-8 text-sm">
             <a href="#features" className="text-gray-500 hover:text-gray-900 transition-colors">Features</a>
@@ -88,10 +86,10 @@ function App() {
 
             {/* Headline */}
             <h1 className="animate-fade-up-delay-1 text-5xl md:text-6xl lg:text-[4.5rem] font-bold leading-[1.08] tracking-[-0.035em] mb-6">
-              Care for aging parents,{' '}
               <span className="bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-600 bg-clip-text text-transparent">
-                without the worry
-              </span>
+                AI-Powered
+              </span>{' '}
+              Care Coordination for Aging Parents
             </h1>
 
             {/* Subheadline */}
@@ -415,7 +413,7 @@ function App() {
               Frequently asked questions
             </h2>
             <p className="text-gray-500 max-w-lg mx-auto">
-              Everything you need to know about ElderSync and caring for your elderly parents.
+              Everything you need to know about CareHive and caring for your elderly parents.
             </p>
           </div>
 
@@ -513,7 +511,7 @@ function App() {
             Ready to care with confidence?
           </h2>
           <p className="text-gray-400 mb-10 max-w-md mx-auto">
-            Join the waitlist and be the first to know when ElderSync launches in Singapore.
+            Join the waitlist and be the first to know when CareHive HiveLink launches in Singapore.
           </p>
           <a
             href="#waitlist"
@@ -535,14 +533,12 @@ function App() {
             <div className="md:col-span-2">
               <div className="flex items-center gap-2.5 mb-4">
                 <div className="w-7 h-7 rounded-md bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
-                  <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                  </svg>
+                  <span className="text-white text-[10px] font-bold leading-none">CH</span>
                 </div>
-                <span className="text-base font-semibold text-white tracking-tight">ElderSync</span>
+                <span className="text-base font-semibold text-white tracking-tight">CareHive</span>
               </div>
               <p className="text-sm text-gray-500 max-w-xs leading-relaxed">
-                Making eldercare simple and connected for families across Singapore.
+                AI-powered care coordination for aging parents. Making eldercare simple and connected for families across Singapore.
               </p>
             </div>
 
@@ -569,7 +565,7 @@ function App() {
 
           <div className="pt-8 border-t border-gray-800/60 flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-xs text-gray-600">
-              &copy; 2026 ElderSync. All rights reserved.
+              &copy; 2026 CareHive. All rights reserved.
             </p>
             <p className="text-xs text-gray-600">
               Made in Singapore for families everywhere.
