@@ -11,38 +11,42 @@
   :root {
     --font-body: 'Instrument Serif', Georgia, serif;
     --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
-    --bg: #0a0d1a;
-    --surface: #111833;
-    --surface2: #182040;
-    --surface-elevated: #1e2a50;
-    --border: rgba(200, 180, 140, 0.08);
-    --border-bright: rgba(200, 180, 140, 0.16);
-    --text: #f0ece0;
-    --text-dim: #8a8474;
-    --accent: #d4a73a;
-    --accent-dim: rgba(212, 167, 58, 0.1);
-    --red: #f87171;
-    --red-dim: rgba(248, 113, 113, 0.1);
-    --green: #4ade80;
-    --green-dim: rgba(74, 222, 128, 0.1);
+    --bg: #FAFAF7;
+    --surface: #ffffff;
+    --surface2: #F3F4F0;
+    --surface-elevated: #ffffff;
+    --border: rgba(20, 60, 60, 0.08);
+    --border-bright: rgba(20, 60, 60, 0.14);
+    --text: #1a2a2a;
+    --text-dim: #6b7a78;
+    --accent: #0e7a6e;
+    --accent-dim: rgba(14, 122, 110, 0.07);
+    --gold: #c08b30;
+    --gold-dim: rgba(192, 139, 48, 0.08);
+    --red: #c53030;
+    --red-dim: rgba(197, 48, 48, 0.06);
+    --green: #2e8b57;
+    --green-dim: rgba(46, 139, 87, 0.07);
   }
 
-  @media (prefers-color-scheme: light) {
+  @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #faf8f2;
-      --surface: #ffffff;
-      --surface2: #f5f0e6;
-      --surface-elevated: #fffdf5;
-      --border: rgba(30, 30, 50, 0.08);
-      --border-bright: rgba(30, 30, 50, 0.16);
-      --text: #1a1814;
-      --text-dim: #7a7468;
-      --accent: #b8860b;
-      --accent-dim: rgba(184, 134, 11, 0.08);
-      --red: #dc2626;
-      --red-dim: rgba(220, 38, 38, 0.08);
-      --green: #16a34a;
-      --green-dim: rgba(22, 163, 74, 0.08);
+      --bg: #141e1e;
+      --surface: #1a2b2a;
+      --surface2: #1f302f;
+      --surface-elevated: #243836;
+      --border: rgba(200, 220, 210, 0.08);
+      --border-bright: rgba(200, 220, 210, 0.14);
+      --text: #e8ede8;
+      --text-dim: #8a9a94;
+      --accent: #3dbaa8;
+      --accent-dim: rgba(61, 186, 168, 0.1);
+      --gold: #d4a73a;
+      --gold-dim: rgba(212, 167, 58, 0.1);
+      --red: #f87171;
+      --red-dim: rgba(248, 113, 113, 0.08);
+      --green: #4ade80;
+      --green-dim: rgba(74, 222, 128, 0.08);
     }
   }
 
@@ -229,7 +233,7 @@
     background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
     padding: clamp(20px, 3vh, 32px) clamp(16px, 2vw, 24px); text-align: center;
   }
-  .ask-card .ask-amount { font-size: clamp(32px, 5vw, 52px); color: var(--accent); font-variant-numeric: tabular-nums; }
+  .ask-card .ask-amount { font-size: clamp(32px, 5vw, 52px); color: var(--gold); font-variant-numeric: tabular-nums; }
   .ask-card .ask-detail { font-family: var(--font-mono); font-size: clamp(10px, 1.2vw, 14px); color: var(--text-dim); margin-top: 8px; text-transform: uppercase; letter-spacing: 1px; }
 
   /* Close slide */
@@ -279,7 +283,7 @@
   <!-- 1. COLD OPEN — "The promise" -->
   <section class="slide slide--gutpunch">
     <h1 class="slide__display reveal" style="font-style:italic;">Every child makes<br>the same promise.</h1>
-    <p class="reveal" style="margin-top:clamp(20px,3vh,40px);font-size:clamp(18px,2.5vw,30px);color:var(--accent);font-style:italic;">"I'll take care of you, Ma."</p>
+    <p class="reveal" style="margin-top:clamp(20px,3vh,40px);font-size:clamp(18px,2.5vw,30px);color:var(--gold);font-style:italic;">"I'll take care of you, Ma."</p>
   </section>
 
   <!-- 2. THE REALITY -->
@@ -401,7 +405,7 @@
   <section class="slide" style="justify-content:center;align-items:center;text-align:center;background-image:radial-gradient(ellipse at 50% 80%, var(--accent-dim) 0%, transparent 45%);">
     <p class="slide__label reveal">The opportunity</p>
     <div class="reveal" style="margin-top:clamp(8px,1.5vh,16px);">
-      <span style="font-size:clamp(64px,12vw,120px);font-weight:400;letter-spacing:-3px;color:var(--accent);line-height:1;">$2.5T</span>
+      <span style="font-size:clamp(64px,12vw,120px);font-weight:400;letter-spacing:-3px;color:var(--gold);line-height:1;">$2.5T</span>
     </div>
     <p class="reveal" style="font-size:clamp(18px,2.5vw,30px);margin-top:clamp(8px,1.5vh,16px);max-width:600px;">
       ASEAN eldercare market. <br><span style="color:var(--text-dim);">Singapore first. Then the region.</span>
@@ -447,7 +451,7 @@
     <h2 class="slide__heading reveal" style="font-size:clamp(24px,4vw,48px);line-height:1.4;">
       Your mother has roughly 4,000 mornings left.
     </h2>
-    <p class="reveal" style="margin-top:clamp(20px,3vh,40px);font-size:clamp(18px,2.5vw,30px);color:var(--accent);max-width:700px;">
+    <p class="reveal" style="margin-top:clamp(20px,3vh,40px);font-size:clamp(18px,2.5vw,30px);color:var(--gold);max-width:700px;">
       We're building the thing that makes sure she's okay for every one of them.
     </p>
     <p class="reveal" style="margin-top:clamp(32px,4vh,56px);font-family:var(--font-mono);font-size:clamp(11px,1.3vw,15px);color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;">
