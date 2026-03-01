@@ -58,7 +58,7 @@
   .deck {
     height: 100dvh;
     overflow-y: auto;
-    scroll-snap-type: y mandatory;
+    scroll-snap-type: y proximity;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
   }
@@ -269,6 +269,11 @@
     .compare-row { flex-direction: column; }
     .ask-grid { grid-template-columns: 1fr; }
   }
+  .deck-nav { position: fixed; bottom: clamp(16px, 3vh, 32px); right: clamp(16px, 3vw, 32px); display: flex; gap: 8px; z-index: 200; }
+  .deck-nav button { width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--border-bright); background: color-mix(in srgb, var(--bg) 80%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: var(--text); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s, border-color 0.2s, transform 0.15s; }
+  .deck-nav button:hover { background: var(--surface); border-color: var(--accent); }
+  .deck-nav button:active { transform: scale(0.92); }
+  @media (max-width: 768px) { .deck-nav button { width: 40px; height: 40px; font-size: 16px; } }
 </style>
 </head>
 <body>
@@ -498,7 +503,8 @@
   };
   SlideEngine.prototype.fadeHints=function(){clearTimeout(this.hintTimer);this.hints.classList.add('faded');};
 
-  new SlideEngine();
+  window.__deckEngine = new SlideEngine();
 </script>
+<div class="deck-nav"><button onclick="window.__deckEngine.prev()" title="Previous slide">&#x2191;</button><button onclick="window.__deckEngine.next()" title="Next slide">&#x2193;</button></div>
 </body>
 </html>
