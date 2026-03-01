@@ -42,25 +42,35 @@
 
   .deck {
     height: 100dvh;
-    overflow-y: auto;
     overflow: hidden;
+    position: relative;
   }
 
   .slide {
     height: 100dvh;
+    width: 100%;
     overflow: hidden;
-    position: relative;
+    position: absolute;
+    top: 0; left: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: clamp(40px, 6vh, 80px) clamp(40px, 8vw, 120px);
+    padding: clamp(40px, 6vh, 80px) clamp(32px, 6vw, 120px);
     isolation: isolate;
     opacity: 0;
-    transform: translateY(40px) scale(0.98);
+    transform: translateY(100%);
     transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 0;
+    background: var(--bg);
   }
 
-  .slide.visible { opacity: 1; transform: none; }
+  .slide:first-child {
+    opacity: 1;
+    transform: translateY(0);
+    z-index: 1;
+  }
+
+  .slide.visible { opacity: 1; transform: translateY(0); z-index: 1; }
 
   .slide .reveal {
     opacity: 0; transform: translateY(20px);
@@ -451,22 +461,8 @@
   var isAnimating = false;
   var TRANSITION_MS = 600;
 
-  // Position all slides absolutely
-  deck.style.position = 'relative';
-  slides.forEach(function(s, i) {
-    s.style.position = 'absolute';
-    s.style.top = '0'; s.style.left = '0';
-    s.style.width = '100%'; s.style.height = '100%';
-    s.style.transition = 'transform ' + TRANSITION_MS + 'ms cubic-bezier(0.16, 1, 0.3, 1), opacity ' + TRANSITION_MS + 'ms cubic-bezier(0.16, 1, 0.3, 1)';
-    if (i === 0) {
-      s.style.transform = 'translateY(0)';
-      s.style.opacity = '1';
-      s.classList.add('visible');
-    } else {
-      s.style.transform = 'translateY(100%)';
-      s.style.opacity = '0';
-    }
-  });
+  // First slide is visible via CSS :first-child, ensure class is set
+  slides[0].classList.add('visible');
 
   // Chrome
   var bar = document.createElement('div'); bar.className = 'deck-progress'; document.body.appendChild(bar);
@@ -484,18 +480,21 @@
     var leaving = slides[current];
     var entering = slides[target];
 
-    // Position entering slide off-screen in the direction of travel
+    // Position entering slide off-screen
     entering.style.transition = 'none';
     entering.style.transform = 'translateY(' + (dir * 100) + '%)';
     entering.style.opacity = '0';
+    entering.style.zIndex = '2';
     entering.offsetHeight; // force reflow
 
-    // Animate both
+    // Animate in
     entering.style.transition = 'transform ' + TRANSITION_MS + 'ms cubic-bezier(0.16, 1, 0.3, 1), opacity ' + TRANSITION_MS + 'ms cubic-bezier(0.16, 1, 0.3, 1)';
     entering.style.transform = 'translateY(0)';
     entering.style.opacity = '1';
     entering.classList.add('visible');
 
+    // Animate out
+    leaving.style.zIndex = '1';
     leaving.style.transform = 'translateY(' + (-dir * 40) + '%)';
     leaving.style.opacity = '0';
 
@@ -504,6 +503,11 @@
 
     setTimeout(function() {
       leaving.classList.remove('visible');
+      leaving.style.zIndex = '0';
+      entering.style.zIndex = '1';
+      // Reset leaving to below
+      leaving.style.transition = 'none';
+      leaving.style.transform = 'translateY(100%)';
       isAnimating = false;
     }, TRANSITION_MS);
   }
