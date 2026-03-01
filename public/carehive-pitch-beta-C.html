@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareHive — Investor Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-body: 'Instrument Serif', Georgia, serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+    --bg: #0a0d1a;
+    --surface: #111833;
+    --surface2: #182040;
+    --surface-elevated: #1e2a50;
+    --border: rgba(200, 180, 140, 0.08);
+    --border-bright: rgba(200, 180, 140, 0.16);
+    --text: #f0ece0;
+    --text-dim: #8a8474;
+    --accent: #d4a73a;
+    --accent-dim: rgba(212, 167, 58, 0.1);
+    --red: #f87171;
+    --red-dim: rgba(248, 113, 113, 0.1);
+    --green: #4ade80;
+    --green-dim: rgba(74, 222, 128, 0.1);
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #faf8f2;
+      --surface: #ffffff;
+      --surface2: #f5f0e6;
+      --surface-elevated: #fffdf5;
+      --border: rgba(30, 30, 50, 0.08);
+      --border-bright: rgba(30, 30, 50, 0.16);
+      --text: #1a1814;
+      --text-dim: #7a7468;
+      --accent: #b8860b;
+      --accent-dim: rgba(184, 134, 11, 0.08);
+      --red: #dc2626;
+      --red-dim: rgba(220, 38, 38, 0.08);
+      --green: #16a34a;
+      --green-dim: rgba(22, 163, 74, 0.08);
+    }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-body);
+    color: var(--text);
+    background: var(--bg);
+    overflow: hidden;
+  }
+
+  .deck {
+    height: 100dvh;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .slide {
+    height: 100dvh;
+    scroll-snap-align: start;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(40px, 6vh, 80px) clamp(40px, 8vw, 120px);
+    isolation: isolate;
+    opacity: 0;
+    transform: translateY(40px) scale(0.98);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .slide.visible { opacity: 1; transform: none; }
+
+  .slide .reveal {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .slide.visible .reveal { opacity: 1; transform: none; }
+  .slide.visible .reveal:nth-child(1) { transition-delay: 0.15s; }
+  .slide.visible .reveal:nth-child(2) { transition-delay: 0.35s; }
+  .slide.visible .reveal:nth-child(3) { transition-delay: 0.55s; }
+  .slide.visible .reveal:nth-child(4) { transition-delay: 0.75s; }
+  .slide.visible .reveal:nth-child(5) { transition-delay: 0.95s; }
+  .slide.visible .reveal:nth-child(6) { transition-delay: 1.15s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slide, .slide .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  }
+
+  /* Nav chrome */
+  .deck-progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); z-index: 100; transition: width 0.3s ease; pointer-events: none; }
+
+  .deck-dots {
+    position: fixed; right: clamp(12px, 2vw, 24px); top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 8px; z-index: 100; padding: 8px;
+    background: color-mix(in srgb, var(--bg) 60%, transparent 40%); border-radius: 20px;
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  }
+  .deck-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-dim); opacity: 0.3; border: none; padding: 0; cursor: pointer; transition: opacity 0.2s, transform 0.2s; }
+  .deck-dot:hover { opacity: 0.6; }
+  .deck-dot.active { opacity: 1; transform: scale(1.5); background: var(--accent); }
+  .deck-dots { display: none !important; }
+
+  .deck-counter { position: fixed; bottom: clamp(12px, 2vh, 24px); right: clamp(12px, 2vw, 24px); font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); z-index: 100; font-variant-numeric: tabular-nums; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+  .deck-hints { position: fixed; bottom: clamp(12px, 2vh, 24px); left: 50%; transform: translateX(-50%); font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); opacity: 0.6; z-index: 100; transition: opacity 0.5s; white-space: nowrap; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+  .deck-hints.faded { opacity: 0; pointer-events: none; }
+
+  /* Typography */
+  .slide__display {
+    font-size: clamp(48px, 9vw, 110px);
+    font-weight: 400; letter-spacing: -2px; line-height: 0.95; text-wrap: balance;
+  }
+  .slide__heading {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 400; letter-spacing: -0.5px; line-height: 1.15; text-wrap: balance;
+  }
+  .slide__body { font-size: clamp(16px, 2.2vw, 24px); line-height: 1.6; color: var(--text-dim); text-wrap: pretty; }
+  .slide__subtitle { font-family: var(--font-mono); font-size: clamp(12px, 1.5vw, 18px); color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; }
+  .slide__label { font-family: var(--font-mono); font-size: clamp(10px, 1.2vw, 13px); font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 12px; }
+  .slide__decor { position: absolute; pointer-events: none; z-index: 0; }
+
+  /* ===== CINEMATIC SLIDE TYPES ===== */
+
+  /* Gut-punch: massive centered text */
+  .slide--gutpunch {
+    justify-content: center; align-items: center; text-align: center;
+    background: var(--bg);
+  }
+  .slide--gutpunch .slide__display { color: var(--text); max-width: 90vw; }
+
+  /* Question slide */
+  .slide--question {
+    justify-content: center; align-items: center; text-align: center;
+    background-image: radial-gradient(ellipse at 50% 50%, rgba(212,167,58,0.06) 0%, transparent 50%);
+  }
+
+  /* Stat reveal */
+  .slide--stat {
+    justify-content: center; align-items: center; text-align: center;
+  }
+  .stat-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(16px, 3vw, 40px);
+    max-width: 900px; width: 100%;
+  }
+  .stat-item { text-align: center; }
+  .stat-val {
+    font-size: clamp(42px, 8vw, 80px); font-weight: 400; letter-spacing: -2px; line-height: 1;
+    color: var(--accent); font-variant-numeric: tabular-nums;
+  }
+  .stat-label { font-family: var(--font-mono); font-size: clamp(10px, 1.2vw, 14px); color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-top: 8px; line-height: 1.4; }
+
+  /* Failure slide */
+  .failure-list {
+    list-style: none; padding: 0; max-width: 700px;
+  }
+  .failure-list li {
+    font-size: clamp(20px, 3vw, 32px); line-height: 1.5; padding: 8px 0;
+    color: var(--text-dim); border-bottom: 1px solid var(--border);
+  }
+  .failure-list li span { color: var(--red); }
+
+  /* Reveal / answer */
+  .slide--reveal {
+    justify-content: center; align-items: center; text-align: center;
+    background-image: radial-gradient(ellipse at 50% 40%, rgba(212,167,58,0.12) 0%, transparent 50%);
+  }
+  .slide--reveal .slide__display { color: var(--accent); }
+
+  /* Product ecosystem */
+  .product-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(12px, 2vw, 24px);
+    max-width: 800px; width: 100%;
+  }
+  .product-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: clamp(20px, 3vh, 32px) clamp(16px, 2vw, 24px);
+    border-top: 3px solid var(--accent);
+  }
+  .product-card h3 { font-size: clamp(20px, 2.5vw, 28px); margin-bottom: 8px; font-weight: 400; }
+  .product-card p { font-size: clamp(13px, 1.5vw, 17px); color: var(--text-dim); line-height: 1.5; }
+
+  /* Comparison */
+  .compare-row {
+    display: flex; align-items: center; justify-content: center; gap: clamp(24px, 4vw, 60px);
+    flex-wrap: wrap;
+  }
+  .compare-box { text-align: center; }
+  .compare-val { font-size: clamp(48px, 8vw, 90px); font-weight: 400; letter-spacing: -2px; line-height: 1; }
+  .compare-label { font-family: var(--font-mono); font-size: clamp(10px, 1.2vw, 14px); color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-top: 8px; }
+  .compare-vs { font-size: clamp(24px, 3vw, 40px); color: var(--text-dim); font-style: italic; }
+
+  /* Holy shit moment */
+  .slide--holyshit {
+    justify-content: center; align-items: center; text-align: center;
+    background: #0a0a0a;
+  }
+  .slide--holyshit .big-text {
+    font-size: clamp(28px, 4.5vw, 56px); line-height: 1.4; max-width: 800px;
+    text-wrap: balance;
+  }
+  .slide--holyshit .big-text em { font-style: italic; color: var(--red); }
+
+  /* Revenue / model */
+  .revenue-flow {
+    display: flex; align-items: center; gap: clamp(8px, 1.5vw, 16px); flex-wrap: wrap;
+    justify-content: center;
+  }
+  .rev-step {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: clamp(12px, 2vh, 20px) clamp(12px, 1.5vw, 20px); text-align: center;
+    min-width: 100px;
+  }
+  .rev-step .rev-val { font-size: clamp(24px, 3vw, 36px); color: var(--accent); font-variant-numeric: tabular-nums; }
+  .rev-step .rev-label { font-family: var(--font-mono); font-size: clamp(9px, 1vw, 12px); color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+  .rev-arrow { color: var(--accent); opacity: 0.4; font-size: 20px; }
+
+  /* Ask slide */
+  .ask-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 3vw, 32px);
+    max-width: 700px; width: 100%;
+  }
+  .ask-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: clamp(20px, 3vh, 32px) clamp(16px, 2vw, 24px); text-align: center;
+  }
+  .ask-card .ask-amount { font-size: clamp(32px, 5vw, 52px); color: var(--accent); font-variant-numeric: tabular-nums; }
+  .ask-card .ask-detail { font-family: var(--font-mono); font-size: clamp(10px, 1.2vw, 14px); color: var(--text-dim); margin-top: 8px; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* Close slide */
+  .slide--close {
+    justify-content: center; align-items: center; text-align: center;
+    background-image: radial-gradient(ellipse at 50% 60%, rgba(212,167,58,0.08) 0%, transparent 50%);
+  }
+  .slide--close .slide__heading { max-width: 700px; font-style: italic; }
+
+  /* Moat list */
+  .moat-list { list-style: none; padding: 0; max-width: 700px; }
+  .moat-list li {
+    font-size: clamp(18px, 2.5vw, 28px); line-height: 1.5; padding: 12px 0 12px 28px;
+    position: relative; border-bottom: 1px solid var(--border);
+  }
+  .moat-list li::before {
+    content: ''; position: absolute; left: 0; top: 22px;
+    width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+  }
+  .moat-list li strong { color: var(--accent); font-weight: 400; }
+
+  /* Responsive */
+  @media (max-height: 700px) {
+    .slide { padding: clamp(24px, 4vh, 40px) clamp(32px, 6vw, 80px); }
+    .slide__display { font-size: clamp(36px, 8vw, 72px); }
+  }
+  @media (max-height: 500px) {
+    .slide { padding: clamp(16px, 3vh, 24px) clamp(24px, 5vw, 48px); }
+    .deck-dots { display: none; }
+  }
+  @media (max-width: 768px) {
+    .stat-grid { grid-template-columns: 1fr; gap: 24px; }
+    .product-grid { grid-template-columns: 1fr; }
+    .compare-row { flex-direction: column; }
+    .ask-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1. COLD OPEN — "She raised you" -->
+  <section class="slide slide--gutpunch">
+    <h1 class="slide__display reveal" style="font-style:italic;">She raised you.</h1>
+    <p class="reveal" style="margin-top:clamp(20px,3vh,40px);font-size:clamp(20px,3vw,36px);color:var(--text-dim);font-style:italic;">Now you check your phone three times a day<br>hoping she's okay.</p>
+  </section>
+
+  <!-- 2. THE GUILT -->
+  <section class="slide slide--question">
+    <p class="slide__heading reveal" style="font-style:italic;max-width:700px;">You can't be there every morning.<br>But you never stop worrying.</p>
+    <p class="reveal" style="margin-top:clamp(20px,3vh,40px);font-size:clamp(16px,2vw,22px);color:var(--text-dim);max-width:600px;text-align:center;">
+      850,000 Singaporeans carry this weight every day — caught between the people who raised them and the people they're raising.
+    </p>
+  </section>
+
+  <!-- 3. THE NUMBERS -->
+  <section class="slide slide--stat" style="background-image:radial-gradient(ellipse at 30% 70%, var(--accent-dim) 0%, transparent 45%);">
+    <p class="slide__label reveal">Singapore, right now</p>
+    <div class="stat-grid">
+      <div class="stat-item reveal">
+        <div class="stat-val">850K</div>
+        <div class="stat-label">Sandwich generation<br>caregivers</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-val">83K</div>
+        <div class="stat-label">Elderly living<br>alone</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-val">1 in 4</div>
+        <div class="stat-label">Will be 65+<br>by 2030</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. THE FAILURE -->
+  <section class="slide" style="justify-content:center;">
+    <p class="slide__label reveal">What families use today</p>
+    <h2 class="slide__heading reveal" style="margin-bottom:clamp(16px,2vh,32px);">WhatsApp. Hope. Panic.</h2>
+    <ul class="failure-list">
+      <li class="reveal"><span>"Mum, are you okay?"</span> &mdash; Unanswered for 6 hours</li>
+      <li class="reveal"><span>"The helper didn't show up"</span> &mdash; Nobody told the family</li>
+      <li class="reveal"><span>"We found her on the floor"</span> &mdash; 9 hours later</li>
+      <li class="reveal"><span>Home care: S$800&ndash;4,500/mo</span> &mdash; Reactive, no family visibility</li>
+    </ul>
+  </section>
+
+  <!-- 5. THE ANSWER -->
+  <section class="slide slide--reveal">
+    <svg class="slide__decor" style="top:0;right:0;" width="120" height="120" viewBox="0 0 120 120">
+      <line x1="120" y1="0" x2="120" y2="40" stroke="var(--accent)" stroke-width="2" opacity="0.15"/>
+      <line x1="80" y1="0" x2="120" y2="0" stroke="var(--accent)" stroke-width="2" opacity="0.15"/>
+    </svg>
+    <p class="slide__subtitle reveal" style="margin-bottom:clamp(12px,2vh,24px);">Introducing</p>
+    <h1 class="slide__display reveal" style="color:var(--accent);">CareHive</h1>
+    <p class="reveal" style="margin-top:clamp(16px,2vh,32px);font-size:clamp(20px,3vw,36px);font-style:italic;max-width:600px;text-align:center;">
+      Certainty that Mum is okay.
+    </p>
+  </section>
+
+  <!-- 6. THE ECOSYSTEM -->
+  <section class="slide" style="justify-content:center;align-items:center;">
+    <p class="slide__label reveal">Four products. One peace of mind.</p>
+    <div class="product-grid" style="margin-top:clamp(12px,2vh,24px);">
+      <div class="product-card reveal">
+        <h3>HiveLink</h3>
+        <p>Smart home sensors that learn Mum's daily rhythm and alert you when something's off.</p>
+      </div>
+      <div class="product-card reveal">
+        <h3>HiveOS</h3>
+        <p>Family dashboard. Everyone sees Mum's wellness in real time. No more guessing.</p>
+      </div>
+      <div class="product-card reveal">
+        <h3>HiveVoice</h3>
+        <p>AI companion that speaks Hokkien, Cantonese, Teochew. Because Mum doesn't speak English to Siri.</p>
+      </div>
+      <div class="product-card reveal">
+        <h3>HiveStory</h3>
+        <p>Captures and preserves Mum's stories, recipes, memories &mdash; before they're gone.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. THE HOLY SHIT MOMENT -->
+  <section class="slide slide--holyshit">
+    <div class="big-text reveal">
+      By the time you finish this pitch,<br>
+      <em>3 elderly Singaporeans will have fallen at home.</em><br><br>
+      <span style="font-size:0.7em;color:var(--text-dim);">1 won't get back up without help.</span>
+    </div>
+  </section>
+
+  <!-- 8. THE MOAT -->
+  <section class="slide" style="justify-content:center;align-items:center;background-image:radial-gradient(ellipse at 70% 30%, var(--accent-dim) 0%, transparent 40%);">
+    <p class="slide__label reveal">Why us. Why now.</p>
+    <h2 class="slide__heading reveal" style="margin-bottom:clamp(12px,2vh,20px);text-align:center;">We speak your grandmother's language.</h2>
+    <ul class="moat-list">
+      <li class="reveal"><strong>Dialect AI</strong> &mdash; Hokkien, Cantonese, Teochew. No one else is building this.</li>
+      <li class="reveal"><strong>NLB Partnership</strong> &mdash; Access to 4.4 million library members nationwide.</li>
+      <li class="reveal"><strong>Helper Empowerment</strong> &mdash; We don't replace helpers. We make them 10x better.</li>
+      <li class="reveal"><strong>9 Co-founders</strong> &mdash; All sweat equity. Skin in the game.</li>
+    </ul>
+  </section>
+
+  <!-- 9. THE MONEY -->
+  <section class="slide" style="justify-content:center;align-items:center;">
+    <p class="slide__label reveal">The price of peace of mind</p>
+    <div class="compare-row" style="margin-top:clamp(16px,3vh,32px);">
+      <div class="compare-box reveal">
+        <div class="compare-val" style="color:var(--accent);">S$20</div>
+        <div class="compare-label">CareHive / month</div>
+      </div>
+      <div class="compare-vs reveal">vs</div>
+      <div class="compare-box reveal">
+        <div class="compare-val" style="color:var(--red);">S$4,500</div>
+        <div class="compare-label">Home care / month</div>
+      </div>
+    </div>
+    <p class="reveal" style="margin-top:clamp(20px,3vh,40px);font-family:var(--font-mono);font-size:clamp(11px,1.3vw,15px);color:var(--text-dim);text-align:center;">
+      Free tier &rarr; S$9.90 &rarr; S$19.90 &rarr; S$39.90 / mo &nbsp;&bull;&nbsp; Homage &amp; Ninkatec: S$800&ndash;4,500, reactive, no family dashboard
+    </p>
+  </section>
+
+  <!-- 10. THE MARKET -->
+  <section class="slide" style="justify-content:center;align-items:center;text-align:center;background-image:radial-gradient(ellipse at 50% 80%, var(--accent-dim) 0%, transparent 45%);">
+    <p class="slide__label reveal">The opportunity</p>
+    <div class="reveal" style="margin-top:clamp(8px,1.5vh,16px);">
+      <span style="font-size:clamp(64px,12vw,120px);font-weight:400;letter-spacing:-3px;color:var(--accent);line-height:1;">$2.5T</span>
+    </div>
+    <p class="reveal" style="font-size:clamp(18px,2.5vw,30px);margin-top:clamp(8px,1.5vh,16px);max-width:600px;">
+      ASEAN eldercare market. <br><span style="color:var(--text-dim);">Singapore first. Then the region.</span>
+    </p>
+  </section>
+
+  <!-- 11. THE MODEL -->
+  <section class="slide" style="justify-content:center;align-items:center;">
+    <p class="slide__label reveal">Revenue trajectory</p>
+    <div class="revenue-flow" style="margin-top:clamp(16px,2vh,24px);">
+      <div class="rev-step reveal"><div class="rev-val">S$52K</div><div class="rev-label">Year 1</div></div>
+      <div class="rev-arrow reveal">&rarr;</div>
+      <div class="rev-step reveal"><div class="rev-val">S$1.2M</div><div class="rev-label">Year 3</div></div>
+      <div class="rev-arrow reveal">&rarr;</div>
+      <div class="rev-step reveal"><div class="rev-val">S$19.4M</div><div class="rev-label">Year 5</div></div>
+    </div>
+    <p class="reveal" style="margin-top:clamp(16px,2vh,32px);font-family:var(--font-mono);font-size:clamp(11px,1.3vw,15px);color:var(--text-dim);text-align:center;max-width:600px;">
+      4 revenue engines: SaaS subscriptions &bull; hardware margin &bull; partnership fees &bull; data insights<br>
+      GTM: Founder-led &rarr; Partnerships &rarr; Scale
+    </p>
+  </section>
+
+  <!-- 12. THE ASK -->
+  <section class="slide" style="justify-content:center;align-items:center;text-align:center;">
+    <p class="slide__label reveal">The ask</p>
+    <h2 class="slide__heading reveal" style="margin-bottom:clamp(16px,2vh,24px);">S$700K for 10%</h2>
+    <div class="ask-grid">
+      <div class="ask-card reveal">
+        <div class="ask-amount">S$200K</div>
+        <div class="ask-detail">Tranche 1 &bull; $4M valuation</div>
+        <p style="font-size:clamp(12px,1.3vw,15px);color:var(--text-dim);margin-top:12px;">MVP, pilot users, first revenue</p>
+      </div>
+      <div class="ask-card reveal">
+        <div class="ask-amount">S$500K</div>
+        <div class="ask-detail">Tranche 2 &bull; $10M valuation</div>
+        <p style="font-size:clamp(12px,1.3vw,15px);color:var(--text-dim);margin-top:12px;">Scale, partnerships, ASEAN expansion</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13. THE CLOSE -->
+  <section class="slide slide--close">
+    <h2 class="slide__heading reveal" style="font-size:clamp(24px,4vw,48px);line-height:1.4;">
+      Your mother has roughly 4,000 mornings left.
+    </h2>
+    <p class="reveal" style="margin-top:clamp(20px,3vh,40px);font-size:clamp(18px,2.5vw,30px);color:var(--accent);max-width:700px;">
+      We're building the thing that makes sure she's okay for every one of them.
+    </p>
+    <p class="reveal" style="margin-top:clamp(32px,4vh,56px);font-family:var(--font-mono);font-size:clamp(11px,1.3vw,15px);color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;">
+      CareHive &mdash; Certainty that Mum is okay
+    </p>
+  </section>
+
+</div>
+
+<script>
+  function SlideEngine(){
+    this.deck=document.querySelector('.deck');
+    this.slides=[].slice.call(document.querySelectorAll('.slide'));
+    this.current=0;this.total=this.slides.length;
+    this.buildChrome();this.bindEvents();this.observe();this.update();
+  }
+  SlideEngine.prototype.buildChrome=function(){
+    var bar=document.createElement('div');bar.className='deck-progress';document.body.appendChild(bar);this.bar=bar;
+    var dots=document.createElement('div');dots.className='deck-dots';var self=this;
+    this.slides.forEach(function(_,i){var d=document.createElement('button');d.className='deck-dot';d.title='Slide '+(i+1);d.onclick=function(){self.goTo(i);};dots.appendChild(d);});
+    document.body.appendChild(dots);this.dots=[].slice.call(dots.children);
+    var ctr=document.createElement('div');ctr.className='deck-counter';document.body.appendChild(ctr);this.counter=ctr;
+    var hints=document.createElement('div');hints.className='deck-hints';hints.textContent='\u2190 \u2192 or scroll to navigate';document.body.appendChild(hints);this.hints=hints;
+    this.hintTimer=setTimeout(function(){hints.classList.add('faded');},4000);
+  };
+  SlideEngine.prototype.bindEvents=function(){
+    var self=this;
+    document.addEventListener('keydown',function(e){
+      if(['ArrowDown','ArrowRight',' ','PageDown'].indexOf(e.key)>-1){e.preventDefault();self.next();}
+      else if(['ArrowUp','ArrowLeft','PageUp'].indexOf(e.key)>-1){e.preventDefault();self.prev();}
+      else if(e.key==='Home'){e.preventDefault();self.goTo(0);}
+      else if(e.key==='End'){e.preventDefault();self.goTo(self.total-1);}
+      self.fadeHints();
+    });
+    var tY;
+    this.deck.addEventListener('touchstart',function(e){tY=e.touches[0].clientY;},{passive:true});
+    this.deck.addEventListener('touchend',function(e){var dy=tY-e.changedTouches[0].clientY;if(Math.abs(dy)>50){dy>0?self.next():self.prev();}});
+  };
+  SlideEngine.prototype.observe=function(){
+    var self=this;
+    var obs=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting){entry.target.classList.add('visible');self.current=self.slides.indexOf(entry.target);self.update();}});},{threshold:0.5});
+    this.slides.forEach(function(s){obs.observe(s);});
+  };
+  SlideEngine.prototype.goTo=function(i){this.slides[Math.max(0,Math.min(i,this.total-1))].scrollIntoView({behavior:'smooth'});};
+  SlideEngine.prototype.next=function(){if(this.current<this.total-1)this.goTo(this.current+1);};
+  SlideEngine.prototype.prev=function(){if(this.current>0)this.goTo(this.current-1);};
+  SlideEngine.prototype.update=function(){
+    this.bar.style.width=((this.current+1)/this.total*100)+'%';
+    var c=this.current;this.dots.forEach(function(d,i){d.classList.toggle('active',i===c);});
+    this.counter.textContent=(this.current+1)+' / '+this.total;
+  };
+  SlideEngine.prototype.fadeHints=function(){clearTimeout(this.hintTimer);this.hints.classList.add('faded');};
+
+  new SlideEngine();
+</script>
+</body>
+</html>
